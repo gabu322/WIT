@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+    background-color: #ee4d2d0f;
+    /* overflow: hidden; */
+    height: 100%;
+}
+
+.mainContent {
+    @apply bg-white mt-5 rounded-md shadow-md;
+    background-color: #ffffff;
+}
+
+.flex-c-1 {
+    @apply flex flex-col gap-1;
+}
+
+.flex-r-1 {
+    @apply flex flex-row gap-1;
+}
+
+.flex-c-2 {
+    @apply flex flex-col gap-2;
+}
+
+.flex-r-2 {
+    @apply flex flex-row gap-2;
+}
+
+.flex-c-3 {
+    @apply flex flex-col gap-3;
+}
+
+.flex-r-3 {
+    @apply flex flex-row gap-3;
+}
+
+.flex-c-4 {
+    @apply flex flex-col gap-4;
+}
+
+.flex-r-4 {
+    @apply flex flex-row gap-4;
+}
+
+.center {
+    @apply justify-center items-center;
+}

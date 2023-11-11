@@ -1,0 +1,69 @@
+// schema.prisma
+
+generator client {
+    provider = "prisma-client-js"
+    output   = "./generated/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = "postgresql://postgres:postgres@localhost:5432/workshop-of-iot?schema=public"
+}
+
+// Define your data models
+model orders {
+    id   Int      @id @default(autoincrement())
+    date DateTime @default(now())
+
+    // Define relationships
+    orderItems orderItems[]
+}
+
+model products {
+    id          Int     @id @default(autoincrement())
+    name        String  @db.VarChar(255)
+    description String?
+    link        String?
+    shopeeId    String?
+
+    // Define relationships
+    productImages     productImages[]
+    productVariations productVariations[]
+}
+
+model productImages {
+    id        Int      @id @default(autoincrement())
+    productId Int
+    link      String
+
+    // Define relationships
+    product   products @relation(fields: [productId], references: [id])
+}
+
+model productVariations {
+    id             Int     @id @default(autoincrement())
+    productId      Int
+    name           String
+    stock          Int
+    expectedStock  Int
+    buyPrice       Float
+    sellPrice      Float
+    buyLink        String?
+    imageLink      String?
+    priorityWeight Float?
+
+    // Define relationships
+    product    products     @relation(fields: [productId], references: [id])
+    orderItems orderItems[]
+}
+
+model orderItems {
+    id                 Int @id @default(autoincrement())
+    orderId            Int
+    productVariationId Int
+    quantity           Int
+
+    // Define relationships
+    productVariation productVariations @relation(fields: [productVariationId], references: [id])
+    order            orders            @relation(fields: [orderId], references: [id])
+}
