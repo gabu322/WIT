@@ -1,5 +1,3 @@
-// schema.prisma
-
 generator client {
     provider = "prisma-client-js"
     output   = "./generated/client"
@@ -11,59 +9,59 @@ datasource db {
 }
 
 // Define your data models
-model orders {
-    id   Int      @id @default(autoincrement())
-    date DateTime @default(now())
+model order {
+    id          Int      @id @default(autoincrement()) // Unique identifier for orders
+    date        DateTime @default(now())              // Date and time of the order
 
     // Define relationships
-    orderItems orderItems[]
+    order_items order_item[]
 }
 
-model products {
-    id          Int     @id @default(autoincrement())
-    name        String  @db.VarChar(255)
-    description String?
-    link        String?
-    shopeeId    String?
+model product {
+    id             Int      @id @default(autoincrement()) // Unique identifier for products
+    name           String   @db.VarChar(255)             // Name of the product
+    description    String?  // Description of the product
+    link           String?  // Link related to the product
+    shopee_id      String?  // Shopee ID for the product
+    targeted_stock Int      // Targeted stock level for the product
+    buy_link       String?  // Link for purchasing the product
 
     // Define relationships
-    productImages     productImages[]
-    productVariations productVariations[]
+    product_images     product_image[]     // Images associated with the product
+    product_variations product_variation[] // Variations of the product
 }
 
-model productImages {
-    id        Int      @id @default(autoincrement())
-    productId Int
-    link      String
+model product_image {
+    id         Int     @id @default(autoincrement()) // Unique identifier for product images
+    product_id Int                                    // ID of the associated product
+    link       String                                // Link to the image
 
     // Define relationships
-    product   products @relation(fields: [productId], references: [id])
+    product product @relation(fields: [product_id], references: [id])
 }
 
-model productVariations {
-    id             Int     @id @default(autoincrement())
-    productId      Int
-    name           String
-    stock          Int
-    expectedStock  Int
-    buyPrice       Float
-    sellPrice      Float
-    buyLink        String?
-    imageLink      String?
-    priorityWeight Float?
+model product_variation {
+    id              Int      @id @default(autoincrement()) // Unique identifier for product variations
+    product_id      Int                                    // ID of the associated product
+    name            String                                 // Name of the variation
+    stock           Int                                    // Stock level of the variation
+    buy_price       Float                                  // Purchase price of the variation
+    sell_price      Float                                  // Selling price of the variation
+    image_link      String?                                // Link to the image of the variation
+    priority_weight Float?                                 // Priority weight for the variation
 
     // Define relationships
-    product    products     @relation(fields: [productId], references: [id])
-    orderItems orderItems[]
+    product        product       @relation(fields: [product_id], references: [id])
+    order_items    order_item[]  // Order items associated with this variation
 }
 
-model orderItems {
-    id                 Int @id @default(autoincrement())
-    orderId            Int
-    productVariationId Int
-    quantity           Int
+model order_item {
+    id                  Int  @id @default(autoincrement()) // Unique identifier for order items
+    order_id            Int                                // ID of the associated order
+    product_variation_id Int                                // ID of the associated product variation
+    quantity            Int                                // Quantity of the product variation in the order
 
     // Define relationships
-    productVariation productVariations @relation(fields: [productVariationId], references: [id])
-    order            orders            @relation(fields: [orderId], references: [id])
+    product_variation product_variation @relation(fields: [product_variation_id], references: [id])
+    order             order            @relation(fields: [order_id], references: [id])
 }

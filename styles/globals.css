@@ -2,24 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    word-wrap: break-word;
+}
 
 body {
-    background-color: #ee4d2d0f;
+    /* background-color: #eff8ff; */
     /* overflow: hidden; */
+    @apply bg-primary-blueGrayLight;
     height: 100%;
 }
 
-.mainContent {
-    @apply bg-white mt-5 rounded-md shadow-md;
-    background-color: #ffffff;
-}
-
-.flex-c-1 {
-    @apply flex flex-col gap-1;
-}
-
-.flex-r-1 {
-    @apply flex flex-row gap-1;
+.main {
+    @apply flex-c-6 w-full sm:w-4/5 lg:w-2/3 xl:w-3/5 m-auto mb-4 p-10 items-center mt-5 relative bg-white rounded shadow-md;
 }
 
 .flex-c-2 {
@@ -30,20 +28,36 @@ body {
     @apply flex flex-row gap-2;
 }
 
-.flex-c-3 {
-    @apply flex flex-col gap-3;
-}
-
-.flex-r-3 {
-    @apply flex flex-row gap-3;
-}
-
 .flex-c-4 {
     @apply flex flex-col gap-4;
 }
 
 .flex-r-4 {
     @apply flex flex-row gap-4;
+}
+
+.flex-c-6 {
+    @apply flex flex-col gap-6;
+}
+
+.flex-r-6 {
+    @apply flex flex-row gap-6;
+}
+
+.flex-c-8 {
+    @apply flex flex-col gap-8;
+}
+
+.flex-r-8 {
+    @apply flex flex-row gap-8;
+}
+
+.flex-c-10 {
+    @apply flex flex-col gap-10;
+}
+
+.flex-r-10 {
+    @apply flex flex-row gap-10;
 }
 
 .center {

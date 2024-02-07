@@ -102,7 +102,7 @@ export default function ProductItem({
 
                         setOrderItems(newOrderItems);
                     }}
-                    text="Adicionar variação"
+                    text="Add variação"
                 />
                 <Button
                     onClick={() => {

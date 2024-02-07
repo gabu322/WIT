@@ -1,4 +1,11 @@
+'use client';
+
+import { useEffect, useState } from "react";
 import Main from "@components/Main";
+import Input from "@components/Input";
+import axios from "axios";
+
+
 
 export default function () {
 
@@ -12,9 +19,9 @@ export default function () {
     }, []);
 
     return <Main>
-         <h1 className="bold">Produtos</h1>
+        <h1 className="bold">Produtos</h1>
         <div className='w-full'>
-            <Input options={products?.map((product) => product)} search id="filter" onChange={(e) => setFilter(e.target.value)}  label="Pesquisar produto"></Input>
+            <Input options={products?.map((product) => product)} search id="filter" onChange={(e) => setFilter(e.target.value)} label="Pesquisar produto"></Input>
         </div>
         <div className='w-full'>
             <h1 className='text-3xl font-bold'>Pedidos</h1>

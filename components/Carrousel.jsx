@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-const Carousel = ({ images }) => {
+export default function Carousel({ images }){
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const nextSlide = () => {
@@ -39,5 +39,3 @@ const Carousel = ({ images }) => {
         </div>
     );
 };
-
-export default Carousel;

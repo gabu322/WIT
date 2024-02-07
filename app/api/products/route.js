@@ -43,7 +43,7 @@ export async function POST(req, res) {
                 name: body.name,
                 description: body.description,
                 link: body.link,
-                shopeeId: parseInt(body.shopeeId, 10),
+                shopeeId: body.shopeeId,
             },
         });
 
@@ -67,7 +67,7 @@ export async function PUT(req, res) {
                 name: body.name,
                 description: body.description,
                 link: body.link,
-                shopeeId: parseInt(body.shopeeId, 10),
+                shopeeId: body.shopeeId,
             },
         });
 

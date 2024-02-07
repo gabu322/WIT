@@ -17,21 +17,6 @@ export default function Button({
     icon
 }) {
 
-    if (transparent) {
-        color = " bg-transparent hover:bg-gray-200";
-    } else if (color == "red") {
-        color = " bg-red-500 hover:bg-red-600";
-    } else if (color == "green") {
-        color = " bg-green-500 hover:bg-green-600";
-    } else if (color == "yellow") {
-        color = " bg-yellow-500 hover:bg-yellow-600";
-    } else if (color == "gray") {
-        color = " bg-gray-500 hover:bg-gray-600";
-    } else if (color == "pink") {
-        color = " bg-pink-500 hover:bg-pink-600";
-    } else {
-        color = " bg-blue-500 hover:bg-blue-600";
-    }
 
     if (textColor == "black") {
         textColor = " text-black";
@@ -49,21 +34,36 @@ export default function Button({
         textColor = " ";
     }
 
-    if (square) {
-        width = square || "40px";
-        height = square || "40px";
+    if (transparent) {
+        color = " bg-transparent hover:bg-gray-200";
+        textColor = " text-black";
+    } else if (color == "red") {
+        color = " bg-red-500 hover:bg-red-600";
+    } else if (color == "green") {
+        color = " bg-green-500 hover:bg-green-600";
+    } else if (color == "yellow") {
+        color = " bg-yellow-500 hover:bg-yellow-600";
+    } else if (color == "gray") {
+        color = " bg-gray-500 hover:bg-gray-600";
+    } else if (color == "pink") {
+        color = " bg-pink-500 hover:bg-pink-600";
+    } else {
+        color = " bg-blue-500 hover:bg-blue-600";
     }
 
-    if (typeof children === 'string' && children.length === 1) {
-        width = width || "40px";
-        height = height || "40px";
+
+    if (square) {
+        width = "40px";
+        height = "40px";
+        console.log("Width:", width, height)
     }
+
 
     return <button type={type ?? "button"}
-        className={"px-3 py-2 rounded text-white drop-shadow transition-all duration-200 cursor-pointer font-semibold text-sm my-auto  " + color + " " + textColor + " " + className}
+        className={"px-3 rounded text-white drop-shadow transition-all duration-200 cursor-pointer font-semibold text-sm my-auto " + color + " " + textColor + " " + className}
         style={{
-            width: width ?? "fit-content",
-            whiteSpace: "nowrap",
+            width: width ??  "fit-content",
+            whiteSpace: " nowrap",
             height: height ?? "40px"
         }}
         onClick={onClick}

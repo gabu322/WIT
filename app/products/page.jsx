@@ -1,7 +1,7 @@
 'use client';
 
 import Main from "@components/Main";
-import Products from "./Products";
+import Products from "./components/Products";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Input from '@components/Input';

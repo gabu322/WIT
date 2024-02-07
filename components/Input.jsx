@@ -19,13 +19,16 @@ export default function Input({
     options,
     getOptionInfo,
     isSearchable,
+    pattern,
     required
 }) {
 
+    const [valid, setValid] = useState(true);
     const [value, setValue] = useState(initialValue);
     useEffect(() => {
         setValue(initialValue);
     }, [initialValue]);
+
     let sizes;
     if (size == "sm") {
         sizes = {
@@ -68,14 +71,25 @@ export default function Input({
         onChange: handleInputChange,
         onFocus: () => setIsFocused(true),
         onBlur: () => isSearchable ? "" : setIsFocused(false),
-        className: "w-full outline-none border rounded transition " + sizes.base + (isFocused ? " border-blue-500" : " border-gray-300"),
+        onInvalid: (e) => {
+            if(value) return;
+            e.target.setCustomValidity("Este campo é obrigatório");
+            setValid(false);
+        },
+        onInput: (e) => {
+            e.target.setCustomValidity("");
+            setValid(true);
+        },
+        className: "w-full outline-none border rounded transition border-gray-300 hover:border-blue-500 " + sizes.base + (isFocused ? " focus:border-blue-500 border-2 " : " ") +
+            (!valid ? " invalid:border-red-300" : ""),
         outline: "none",
         disabled: disabled,
+        // pattern: pattern || (type == "number" ? "[0-9]*" : ""),
         required: required
     };
 
     let correctLabel = (type == "datetime-local" || options > 0 || type == "file" || type == "date") ? true : false;
-    let input = (<input {...commonAttributes}  />);
+    let input = (<input {...commonAttributes} />);
 
     if (isSearchable && options && options.length > 0) {
         input = (
@@ -115,6 +129,7 @@ export default function Input({
                         }, 0);
                     }}
                 >
+
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M14 2L8 8L2 2" stroke="black" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
                         <path d="M2 14L8 8L14 14" stroke="black" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
@@ -132,8 +147,8 @@ export default function Input({
             {options.map((option) => (
                 <option key={option.id}
                     value={option.id}
-
-                    disabled={option.disabled}>
+                    disabled={option.disabled}
+                >
                     {option.name}
                 </option>
             ))}
@@ -172,10 +187,11 @@ export default function Input({
     return <div className={`relative h-full ${!className || !className.includes("w-") ? "w-full" : ""} ${className}`} name={value}>
 
         {input}
-        <label htmlFor={htmlFor} style={{ zIndex: 1 }}
-            className={'absolute left-2 transition-all bg-white whitespace-nowrap ' +
+        <label htmlFor={htmlFor} style={{ zIndex: 1, }}
+            className={'absolute left-2 transition-all bg-white rounded whitespace-nowrap font-medium ' +
                 ((isFocused || value || correctLabel) ? (sizes.labelSelected + ' cursor-default') : (sizes.labelUnselected + ' cursor-text')) +
-                ((isFocused) ? ' text-blue-300' : ' text-gray-400')
+                ((isFocused) ? ' text-blue-500' : ' text-gray-400') +
+                (" ")
             }
         >
             {label}
