@@ -116,19 +116,18 @@ exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
-  link: 'link',
   shopee_id: 'shopee_id',
   targeted_stock: 'targeted_stock',
   buy_link: 'buy_link'
 };
 
-exports.Prisma.Product_imageScalarFieldEnum = {
+exports.Prisma.Product_imagesScalarFieldEnum = {
   id: 'id',
   product_id: 'product_id',
   link: 'link'
 };
 
-exports.Prisma.Product_variationScalarFieldEnum = {
+exports.Prisma.Product_variationsScalarFieldEnum = {
   id: 'id',
   product_id: 'product_id',
   name: 'name',
@@ -165,8 +164,8 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   order: 'order',
   product: 'product',
-  product_image: 'product_image',
-  product_variation: 'product_variation',
+  product_images: 'product_images',
+  product_variations: 'product_variations',
   order_item: 'order_item'
 };
 

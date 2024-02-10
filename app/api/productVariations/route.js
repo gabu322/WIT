@@ -2,6 +2,7 @@ import { prisma } from "@app/api/client";
 
 export async function POST(req, res) {
     try {
+        
         const body = await req.json();
 
         const createdVariations = await Promise.all(body.map(async (variation) => {

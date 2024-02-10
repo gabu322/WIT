@@ -55,7 +55,6 @@ export default function Button({
     if (square) {
         width = "40px";
         height = "40px";
-        console.log("Width:", width, height)
     }
 
 

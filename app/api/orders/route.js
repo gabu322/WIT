@@ -4,7 +4,7 @@ export async function POST(req, res) {
     try {
         const body = await req.json();
 
-        const order = await prisma.orders.create({
+        const order = await prisma.order.create({
             data: {
                 data: body.data,
             }
