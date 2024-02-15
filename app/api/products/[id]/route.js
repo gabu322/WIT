@@ -2,22 +2,51 @@ import { prisma } from "@app/api/client";
 
 export async function GET(req, res) {
     try {
+        // Get id from params
         const { id } = res.params;
 
+        // Get product based on id
         const product = await prisma.product.findUnique({
             where: {
-                id: parseInt(id, 10),
-            },
+                id: parseInt(id, 10)
+            }
         });
 
-        if (!product) {
-            return new Response(JSON.stringify("Product not found"), { status: 404 });
-        }
-        return new Response(JSON.stringify(product), { status: 200 });
+        // Transform product to a frontend friendly format
+        const formatedProduct = {
+            id: product.id,
+            name: product.name,
+            description: product.description,
+            shopeeId: product.shopee_id,
+            targetedStock: product.targeted_stock,
+        };
 
+        // Return response
+        if (!product) {
+            return new Response(JSON.stringify("Produto não encontrado"), { status: 404 });
+        } else {
+            return new Response(JSON.stringify(formatedProduct), { status: 200 });
+        }
     } catch (error) {
-        console.log(error);
-        return new Response(JSON.stringify("Error in request"), { status: 500 });
+        return new Response(JSON.stringify("Request error in productImages with GET"), { status: 500 });
     }
 }
 
+export async function DELETE(req, res) {
+    try {
+        // Get id from params
+        const { id } = res.params;
+
+        // Delete product based on id
+        const deletedProduct = await prisma.product.delete({
+            where: {
+                id: parseInt(id, 10)
+            }
+        });
+
+        // Return the deleted product
+        return new Response(JSON.stringify(deletedProduct), { status: 200 });
+    } catch (error) {
+        return new Response(JSON.stringify("Request error"), { status: 500 });
+    }
+}
