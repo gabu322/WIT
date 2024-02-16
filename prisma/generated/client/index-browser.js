@@ -117,8 +117,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   name: 'name',
   description: 'description',
   shopee_id: 'shopee_id',
-  targeted_stock: 'targeted_stock',
-  buy_link: 'buy_link'
+  targeted_stock: 'targeted_stock'
 };
 
 exports.Prisma.Product_imagesScalarFieldEnum = {
@@ -135,6 +134,7 @@ exports.Prisma.Product_variationsScalarFieldEnum = {
   buy_price: 'buy_price',
   sell_price: 'sell_price',
   image_link: 'image_link',
+  buy_link: 'buy_link',
   priority_weight: 'priority_weight'
 };
 

@@ -12,6 +12,11 @@ export async function GET(req, res) {
             }
         });
 
+        // If no product is found, return a 404 response
+        if (!product) {
+            return new Response(JSON.stringify("Produto não encontrado"), { status: 404 });
+        }
+        
         // Transform product to a frontend friendly format
         const formatedProduct = {
             id: product.id,
@@ -21,12 +26,8 @@ export async function GET(req, res) {
             targetedStock: product.targeted_stock,
         };
 
-        // Return response
-        if (!product) {
-            return new Response(JSON.stringify("Produto não encontrado"), { status: 404 });
-        } else {
-            return new Response(JSON.stringify(formatedProduct), { status: 200 });
-        }
+        // Return the formated product
+        return new Response(JSON.stringify(formatedProduct), { status: 200 });
     } catch (error) {
         return new Response(JSON.stringify("Request error in productImages with GET"), { status: 500 });
     }

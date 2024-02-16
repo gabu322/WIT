@@ -6,6 +6,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import Main from "@components/Main";
+import Alert from "@components/Alert";
 
 export default ({ params }) => {
     const router = useRouter();
@@ -25,6 +26,7 @@ export default ({ params }) => {
         stock: 0,
         imageLink: '',
         buyPrice: '',
+        buyLink: '',
         sellPrice: '',
     }]);
 
@@ -32,30 +34,29 @@ export default ({ params }) => {
 
     const [devMode, setDevMode] = useState(false);
 
+    const [alert, setAlert] = useState();
+
     useEffect(() => {
         setDevMode(location.search.includes('dev'));
 
-        // Fetch product data if it's an existing product
+        const fetchData = async () => {
+            // await axios.get(`/api/products?id=${params?.id}`)
+            await axios.get(`/api/products/${params?.id}`)
+                .then(res => setProduct(res.data))
+                .catch(error => {
+                    setAlert(error)
+                    return Promise.reject('Product not found');
+                });
+
+            await axios.get(`/api/productVariations?productId=${params?.id}`)
+                .then(res => setProductVariations(res.data))
+
+            await axios.get(`/api/productImages?productId=${params?.id}`)
+                .then(res => setProductImages(res.data))
+        };
+
         if (params?.id > 0) {
-            try {
-                // Fetch product data
-                axios.get(`/api/products?id=${params?.id}`).then((res) => {
-                    setProduct(res.data);
-                });
-
-                // Fetch product variations
-                axios.get(`/api/productVariations?productId=${params?.id}`).then((res) => {
-                    setProductVariations(res.data);
-                });
-
-                //
-                axios.get(`/api/productImages?productId=${params?.id}`).then((res) => {
-                    setProductImages(res.data);
-                });
-
-            } catch (error) {
-                console.error('Error in one of the requests:', error);
-            }
+            fetchData();
         }
     }, [params?.id]);
 
@@ -69,6 +70,7 @@ export default ({ params }) => {
             stock: 0,
             imageLink: '',
             buyPrice: '',
+            buyLink: '',
             sellPrice: '',
         };
 
@@ -132,18 +134,26 @@ export default ({ params }) => {
         e.preventDefault();
 
         try {
-            if (params?.id != 0) {
+            if (params?.id > 0) {
+                console.log("Updating product")
                 await axios.put('/api/products', product);
-                await axios.put('/api/productVariations', product.productVariations);
-                await axios.put('/api/productImages', product.productImages);
+                await axios.put('/api/productVariations', productVariations);
+                await axios.put('/api/productImages', productImages);
             } else {
-                const newProduct = await axios.post('/api/products', product);
+                //check if exists a product with the same name
+                const existingProduct = await axios.get(`/api/products?name=${product.name}`);
 
-                product.productVariations.forEach((variation) => { variation.productId = newProduct.data.id });
-                product.productImages.forEach((image) => { image.productId = newProduct.data.id; });
+                if (existingProduct.data.length > 0) {
+                    setAlert('Produto já existe');
+                    return;
+                }
+                const newProductId = await axios.post('/api/products', product);
 
-                await axios.post('/api/productVariations', product.productVariations);
-                await axios.post('/api/productImages', product.productImages);
+                productVariations.forEach((variation) => { variation.productId = newProductId.data.id });
+                productImages.forEach((image) => { image.productId = newProductId.data.id; });
+
+                await axios.post('/api/productVariations', productVariations);
+                await axios.post('/api/productImages', productImages);
             }
 
             router.push('/products');
@@ -152,48 +162,54 @@ export default ({ params }) => {
         }
     };
 
-    return <main className="main">
+    return <>
+        {alert && <Alert error={alert} color="red" />}
 
-        <form onSubmit={handleSubmit} className="flex-c-10 w-full">
+        <main className="main">
 
-            {/* Informações gerais */}
-            <div className="flex-c-8">
-                <h1 className="text-4xl font-bold w-full">Informações gerais</h1>
+            <form onSubmit={handleSubmit} className="flex-c-10 w-full">
 
-                <div className="flex-c-6">
-                    <Input
-                        label="Nome completo do produto"
-                        name="name"
-                        initialValue={product.name}
-                        onChange={(e) => handleChange(e)}
-                    />
+                {/* Informações gerais */}
+                <div className="flex-c-8">
+                    <h1 className="text-4xl font-bold w-full">Informações gerais</h1>
 
-                    <Input
-                        label="Descrição"
-                        name="description"
-                        initialValue={product.description}
-                        onChange={(e) => handleChange(e)}
-                        type="textarea"
-                    />
-
-
-                    <div className="flex-r-6">
-                        <Input onChange={(e) => handleChange(e)} label="Shopee ID" name="shopeeId" initialValue={product.shopeeId} />
-
-                        <Button
-                            href={"https://shopee.com.br/product/" + process.env.NEXT_PUBLIC_SHOPEE_SHOP_ID + "/" + product.shopeeId}
-                            blank
-                            text="Verificar"
+                    <div className="flex-c-6">
+                        <Input
+                            label="Nome completo do produto"
+                            name="name"
+                            initialValue={product.name}
+                            onChange={(e) => handleChange(e)}
                         />
 
-                        <Button
-                            href={"https://seller.shopee.com.br/portal/product/" + product.shopeeId}
-                            blank
-                            text="Editar"
+                        <Input
+                            label="Descrição"
+                            name="description"
+                            initialValue={product.description}
+                            onChange={(e) => handleChange(e)}
+                            type="textarea"
                         />
-                    </div>
 
-                    <div className="flex-r-6">
+                        <div className="flex-r-6">
+                            <Input
+                                label="Shopee ID"
+                                name="shopeeId"
+                                initialValue={product.shopeeId}
+                                onChange={(e) => handleChange(e)}
+                            />
+
+                            <Button
+                                href={"https://shopee.com.br/product/" + process.env.NEXT_PUBLIC_SHOPEE_SHOP_ID + "/" + product.shopeeId}
+                                blank
+                                text="Verificar"
+                            />
+
+                            <Button
+                                href={"https://seller.shopee.com.br/portal/product/" + product.shopeeId}
+                                blank
+                                text="Editar"
+                            />
+                        </div>
+
                         <Input
                             label="Estoque esperado"
                             name="targetedStock"
@@ -201,158 +217,173 @@ export default ({ params }) => {
                             onChange={(e) => handleChange(e)}
                         />
 
-                        <Input
-                            label="Link de compra"
-                            name="buyLink"
-                            initialValue={product.buyLink}
-                            onChange={(e) => handleChange(e)}
-                        />
                     </div>
-
                 </div>
-            </div>
 
-            {/* Imagens */}
-            <div className="flex-c-8">
-                <h1 className="text-4xl font-bold w-full">Imagens</h1>
-                <div className="flex-r-6 justify-between">
-                    <Input label="Link da imagem" name="imageLink" onChange={(e) => { setNewImageLink(e.target.value); }} />
-                    <Button
-                        onClick={() => {
-                            if (newImageLink.trim() !== '') {
-                                handleAddImage(newImageLink.trim());;
-                            }
-                        }}
-                        text="Adicionar imagem"
-                    />
-
-                </div>
-                <div className="flex-r-6 w-full">
-                    {productImages?.map((image, index) => (
-                        <div key={index} className="relative border-2 rounded-lg border-orange-200" style={{ width: "150px", height: "150px" }}>
-                            <img src={image.link} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-                            <Button
-                                className={"absolute -top-0 -right-0"}
-                                onClick={() => {
-                                    handleRemoveImage(index)
-                                }}
-                                square
-                                text="-"
-                            />
-
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Informações de venda */}
-            <div className="flex-c-8">
-                <div className="flex-r-6">
-                    <h1 className="text-4xl font-bold w-full">Informações de venda</h1>
-                    {productVariations.length > 1 && <Button onClick={handleApplyToAll} text="Aplicar a todos" />}
-                    <Button onClick={handleAddVariation} color="green">Adicionar variações</Button>
-                </div>
-                {productVariations.length == 1
-                    ? <div className="flex-c-6">
-                        <Input
-                            id="stock"
-                            name="stock"
-                            label="Estoque atual"
-                            type="number"
-                            initialValue={productVariations[0].stock}
-                            onChange={(e) => handleChangeVariation(e, 0)}
-                            required
+                {/* Imagens */}
+                <div className="flex-c-8">
+                    <h1 className="text-4xl font-bold w-full">Imagens</h1>
+                    <div className="flex-r-6 justify-between">
+                        <Input label="Link da imagem" name="imageLink" onChange={(e) => { setNewImageLink(e.target.value); }} />
+                        <Button
+                            onClick={() => {
+                                if (newImageLink.trim() !== '') {
+                                    handleAddImage(newImageLink.trim());;
+                                }
+                            }}
+                            text="Adicionar imagem"
                         />
-                        <Input
-                            id="buyPrice"
-                            name="buyPrice"
-                            label="Preço de compra (USD)"
-                            type="currency"
-                            initialValue={productVariations[0].buyPrice}
-                            onChange={(e) => handleChangeVariation(e, 0)}
-                            required
-                        />
-                        <Input
-                            id="sellPrice"
-                            name="sellPrice"
-                            label="Preço de venda (R$)"
-                            type="currency"
-                            initialValue={productVariations[0].sellPrice}
-                            onChange={(e) => handleChangeVariation(e, 0)}
-                            required
-                        />
+
                     </div>
-                    : <div className="flex-c-6">
-                        {productVariations.map((variation, index) => (
-                            <div key={index} className="flex-r-6">
-                                <Input
-                                    id={"variationName" + (index + 1)}
-                                    name="name"
-                                    label={"Nome da variação"}
-                                    initialValue={variation.name}
-                                    onChange={(e) => handleChangeVariation(e, index)}
-                                />
-                                <Input
-                                    id={"stock" + (index + 1)}
-                                    name="stock"
-                                    label={"Estoque atual"}
-                                    type="number"
-                                    initialValue={variation.stock}
-                                    onChange={(e) => handleChangeVariation(e, index)}
-                                    required
-                                />
-                                <Input
-                                    id={"buyPrice" + (index + 1)}
-                                    name="buyPrice"
-                                    label={"Preço de compra (USD)"}
-                                    type="currency"
-                                    initialValue={variation.buyPrice}
-                                    onChange={(e) => handleChangeVariation(e, index)}
-                                    required
-                                />
-                                <Input
-                                    id={"sellPrice" + (index + 1)}
-                                    name="sellPrice"
-                                    label={"Preço de venda (R$)"}
-                                    type="currency"
-                                    initialValue={variation.sellPrice}
-                                    onChange={(e) => handleChangeVariation(e, index)}
-                                    required
-                                />
+                    {productImages.length > 0 && <div className="flex-r-6 w-full">
+                        {productImages?.map((image, index) => (
+                            <div key={index} className="relative border-2 rounded-lg border-orange-200" style={{ width: "150px", height: "150px" }}>
+                                <img src={image.link} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
                                 <Button
-                                    onClick={() => handleRemoveVariation(index)}
-                                    color="red"
+                                    className={"absolute -top-0 -right-0"}
+                                    onClick={() => {
+                                        handleRemoveImage(index)
+                                    }}
                                     square
-                                    text="x"
+                                    text="-"
                                 />
+
                             </div>
                         ))}
                     </div>
-                }
-            </div>
+                    }
+                </div>
 
-            {/* Dev Buttons to debug */}
-            <div className="w-full flex flex-row-reverse gap-6">
-                <Button type="submit" color="green" >Atualizar produto</Button>
-                {devMode && <>
-                    <Button
-                        onClick={() => { console.log(product); }}
-                        color="yellow"
-                        text="Print product"
-                    />
+                {/* Informações de venda */}
+                <div className="flex-c-8">
+                    <div className="flex-r-6">
+                        <h1 className="text-4xl font-bold w-full">Informações de venda</h1>
+                        {productVariations.length > 1 && <Button onClick={handleApplyToAll} text="Aplicar a todos" />}
+                        <Button onClick={handleAddVariation} color="green">Adicionar variações</Button>
+                    </div>
+                    {productVariations.length == 1
+                        ? <div className="flex-c-6">
+                            <Input
+                                id="stock"
+                                name="stock"
+                                label="Estoque atual"
+                                type="number"
+                                initialValue={productVariations[0].stock}
+                                onChange={(e) => handleChangeVariation(e, 0)}
+                                required
+                            />
+                            <Input
+                                id="buyLink"
+                                name="buyLink"
+                                label="Link de compra"
+                                initialValue={productVariations[0].buyLink}
+                                onChange={(e) => handleChangeVariation(e, 0)}
+                            />
+                            <Input
+                                id="buyPrice"
+                                name="buyPrice"
+                                label="Preço de compra (USD)"
+                                type="currency"
+                                initialValue={productVariations[0].buyPrice}
+                                onChange={(e) => handleChangeVariation(e, 0)}
+                                required
+                            />
+                            <Input
+                                id="sellPrice"
+                                name="sellPrice"
+                                label="Preço de venda (R$)"
+                                type="currency"
+                                initialValue={productVariations[0].sellPrice}
+                                onChange={(e) => handleChangeVariation(e, 0)}
+                                required
+                            />
+                        </div>
+                        : <div className="flex-c-6">
+                            {productVariations.map((variation, index) => (
+                                <div key={index} className="flex-r-6">
+                                    <Input
+                                        id={"variationName" + (index + 1)}
+                                        name="name"
+                                        label={"Nome da variação"}
+                                        initialValue={variation.name}
+                                        onChange={(e) => handleChangeVariation(e, index)}
+                                    />
+                                    <Input
+                                        id={"stock" + (index + 1)}
+                                        name="stock"
+                                        label={"Estoque atual"}
+                                        type="number"
+                                        initialValue={variation.stock}
+                                        onChange={(e) => handleChangeVariation(e, index)}
+                                        required
+                                    />
+                                    <Input
+                                        id={"buyLink" + (index + 1)}
+                                        name="buyLink"
+                                        label={"Link de compra"}
+                                        initialValue={variation.buyLink}
+                                        onChange={(e) => handleChangeVariation(e, index)}
+                                    />
+                                    <Input
+                                        id={"buyPrice" + (index + 1)}
+                                        name="buyPrice"
+                                        label={"Preço de compra (USD)"}
+                                        type="currency"
+                                        initialValue={variation.buyPrice}
+                                        onChange={(e) => handleChangeVariation(e, index)}
+                                        required
+                                    />
+                                    <Input
+                                        id={"sellPrice" + (index + 1)}
+                                        name="sellPrice"
+                                        label={"Preço de venda (R$)"}
+                                        type="currency"
+                                        initialValue={variation.sellPrice}
+                                        onChange={(e) => handleChangeVariation(e, index)}
+                                        required
+                                    />
+                                    <Button
+                                        onClick={() => handleRemoveVariation(index)}
+                                        color="red"
+                                        square
+                                        text="x"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    }
+                </div>
 
+                {/* Dev Buttons to debug */}
+                <div className="w-full flex flex-row-reverse gap-6">
                     <Button
-                        onClick={() => { console.log(productVariations); }}
-                        color="yellow"
-                        text="Print Variations"
+                        type="submit"
+                        color="green"
+                        text={params?.id > 0
+                            ? "Atualizar produto"
+                            : "Criar produto"
+                        }
                     />
-                    <Button
-                        onClick={() => { console.log(productImages); }}
-                        color="yellow"
-                        text="Print Images"
-                    />
-                </>}
-            </div>
-        </form>
-    </main>;
+                    {devMode && <>
+                        <Button
+                            onClick={() => { console.log(product); }}
+                            color="yellow"
+                            text="Print product"
+                        />
+
+                        <Button
+                            onClick={() => { console.log(productVariations); }}
+                            color="yellow"
+                            text="Print Variations"
+                        />
+                        <Button
+                            onClick={() => { console.log(productImages); }}
+                            color="yellow"
+                            text="Print Images"
+                        />
+                    </>}
+                </div>
+            </form>
+        </main>
+    </>
 };

@@ -59,7 +59,7 @@ export default function Button({
 
 
     return <button type={type ?? "button"}
-        className={"px-3 rounded text-white drop-shadow transition-all duration-200 cursor-pointer font-semibold text-sm my-auto " + color + " " + textColor + " " + className}
+        className={"px-3 rounded text-white drop-shadow transition-all duration-200 cursor-pointer font-semibold text-sm " + color + " " + textColor + " " + className}
         style={{
             width: width ??  "fit-content",
             whiteSpace: " nowrap",

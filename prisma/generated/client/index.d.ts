@@ -2265,7 +2265,6 @@ export namespace Prisma {
     description: string | null
     shopee_id: string | null
     targeted_stock: number | null
-    buy_link: string | null
   }
 
   export type ProductMaxAggregateOutputType = {
@@ -2274,7 +2273,6 @@ export namespace Prisma {
     description: string | null
     shopee_id: string | null
     targeted_stock: number | null
-    buy_link: string | null
   }
 
   export type ProductCountAggregateOutputType = {
@@ -2283,7 +2281,6 @@ export namespace Prisma {
     description: number
     shopee_id: number
     targeted_stock: number
-    buy_link: number
     _all: number
   }
 
@@ -2304,7 +2301,6 @@ export namespace Prisma {
     description?: true
     shopee_id?: true
     targeted_stock?: true
-    buy_link?: true
   }
 
   export type ProductMaxAggregateInputType = {
@@ -2313,7 +2309,6 @@ export namespace Prisma {
     description?: true
     shopee_id?: true
     targeted_stock?: true
-    buy_link?: true
   }
 
   export type ProductCountAggregateInputType = {
@@ -2322,7 +2317,6 @@ export namespace Prisma {
     description?: true
     shopee_id?: true
     targeted_stock?: true
-    buy_link?: true
     _all?: true
   }
 
@@ -2418,7 +2412,6 @@ export namespace Prisma {
     description: string | null
     shopee_id: string | null
     targeted_stock: number
-    buy_link: string | null
     _count: ProductCountAggregateOutputType | null
     _avg: ProductAvgAggregateOutputType | null
     _sum: ProductSumAggregateOutputType | null
@@ -2446,7 +2439,6 @@ export namespace Prisma {
     description?: boolean
     shopee_id?: boolean
     targeted_stock?: boolean
-    buy_link?: boolean
     product_images?: boolean | product$product_imagesArgs<ExtArgs>
     product_variations?: boolean | product$product_variationsArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
@@ -2458,7 +2450,6 @@ export namespace Prisma {
     description?: boolean
     shopee_id?: boolean
     targeted_stock?: boolean
-    buy_link?: boolean
   }
 
   export type productInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2480,7 +2471,6 @@ export namespace Prisma {
       description: string | null
       shopee_id: string | null
       targeted_stock: number
-      buy_link: string | null
     }, ExtArgs["result"]["product"]>
     composites: {}
   }
@@ -2883,7 +2873,6 @@ export namespace Prisma {
     readonly description: FieldRef<"product", 'String'>
     readonly shopee_id: FieldRef<"product", 'String'>
     readonly targeted_stock: FieldRef<"product", 'Int'>
-    readonly buy_link: FieldRef<"product", 'String'>
   }
     
 
@@ -4225,6 +4214,7 @@ export namespace Prisma {
     buy_price: number | null
     sell_price: number | null
     image_link: string | null
+    buy_link: string | null
     priority_weight: number | null
   }
 
@@ -4236,6 +4226,7 @@ export namespace Prisma {
     buy_price: number | null
     sell_price: number | null
     image_link: string | null
+    buy_link: string | null
     priority_weight: number | null
   }
 
@@ -4247,6 +4238,7 @@ export namespace Prisma {
     buy_price: number
     sell_price: number
     image_link: number
+    buy_link: number
     priority_weight: number
     _all: number
   }
@@ -4278,6 +4270,7 @@ export namespace Prisma {
     buy_price?: true
     sell_price?: true
     image_link?: true
+    buy_link?: true
     priority_weight?: true
   }
 
@@ -4289,6 +4282,7 @@ export namespace Prisma {
     buy_price?: true
     sell_price?: true
     image_link?: true
+    buy_link?: true
     priority_weight?: true
   }
 
@@ -4300,6 +4294,7 @@ export namespace Prisma {
     buy_price?: true
     sell_price?: true
     image_link?: true
+    buy_link?: true
     priority_weight?: true
     _all?: true
   }
@@ -4398,6 +4393,7 @@ export namespace Prisma {
     buy_price: number
     sell_price: number
     image_link: string | null
+    buy_link: string | null
     priority_weight: number | null
     _count: Product_variationsCountAggregateOutputType | null
     _avg: Product_variationsAvgAggregateOutputType | null
@@ -4428,6 +4424,7 @@ export namespace Prisma {
     buy_price?: boolean
     sell_price?: boolean
     image_link?: boolean
+    buy_link?: boolean
     priority_weight?: boolean
     product?: boolean | productDefaultArgs<ExtArgs>
     order_items?: boolean | product_variations$order_itemsArgs<ExtArgs>
@@ -4442,6 +4439,7 @@ export namespace Prisma {
     buy_price?: boolean
     sell_price?: boolean
     image_link?: boolean
+    buy_link?: boolean
     priority_weight?: boolean
   }
 
@@ -4466,6 +4464,7 @@ export namespace Prisma {
       buy_price: number
       sell_price: number
       image_link: string | null
+      buy_link: string | null
       priority_weight: number | null
     }, ExtArgs["result"]["product_variations"]>
     composites: {}
@@ -4871,6 +4870,7 @@ export namespace Prisma {
     readonly buy_price: FieldRef<"product_variations", 'Float'>
     readonly sell_price: FieldRef<"product_variations", 'Float'>
     readonly image_link: FieldRef<"product_variations", 'String'>
+    readonly buy_link: FieldRef<"product_variations", 'String'>
     readonly priority_weight: FieldRef<"product_variations", 'Float'>
   }
     
@@ -6205,8 +6205,7 @@ export namespace Prisma {
     name: 'name',
     description: 'description',
     shopee_id: 'shopee_id',
-    targeted_stock: 'targeted_stock',
-    buy_link: 'buy_link'
+    targeted_stock: 'targeted_stock'
   };
 
   export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
@@ -6229,6 +6228,7 @@ export namespace Prisma {
     buy_price: 'buy_price',
     sell_price: 'sell_price',
     image_link: 'image_link',
+    buy_link: 'buy_link',
     priority_weight: 'priority_weight'
   };
 
@@ -6384,7 +6384,6 @@ export namespace Prisma {
     description?: StringNullableFilter<"product"> | string | null
     shopee_id?: StringNullableFilter<"product"> | string | null
     targeted_stock?: IntFilter<"product"> | number
-    buy_link?: StringNullableFilter<"product"> | string | null
     product_images?: Product_imagesListRelationFilter
     product_variations?: Product_variationsListRelationFilter
   }
@@ -6395,7 +6394,6 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     shopee_id?: SortOrderInput | SortOrder
     targeted_stock?: SortOrder
-    buy_link?: SortOrderInput | SortOrder
     product_images?: product_imagesOrderByRelationAggregateInput
     product_variations?: product_variationsOrderByRelationAggregateInput
   }
@@ -6409,7 +6407,6 @@ export namespace Prisma {
     description?: StringNullableFilter<"product"> | string | null
     shopee_id?: StringNullableFilter<"product"> | string | null
     targeted_stock?: IntFilter<"product"> | number
-    buy_link?: StringNullableFilter<"product"> | string | null
     product_images?: Product_imagesListRelationFilter
     product_variations?: Product_variationsListRelationFilter
   }, "id">
@@ -6420,7 +6417,6 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     shopee_id?: SortOrderInput | SortOrder
     targeted_stock?: SortOrder
-    buy_link?: SortOrderInput | SortOrder
     _count?: productCountOrderByAggregateInput
     _avg?: productAvgOrderByAggregateInput
     _max?: productMaxOrderByAggregateInput
@@ -6437,7 +6433,6 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"product"> | string | null
     shopee_id?: StringNullableWithAggregatesFilter<"product"> | string | null
     targeted_stock?: IntWithAggregatesFilter<"product"> | number
-    buy_link?: StringNullableWithAggregatesFilter<"product"> | string | null
   }
 
   export type product_imagesWhereInput = {
@@ -6498,6 +6493,7 @@ export namespace Prisma {
     buy_price?: FloatFilter<"product_variations"> | number
     sell_price?: FloatFilter<"product_variations"> | number
     image_link?: StringNullableFilter<"product_variations"> | string | null
+    buy_link?: StringNullableFilter<"product_variations"> | string | null
     priority_weight?: FloatNullableFilter<"product_variations"> | number | null
     product?: XOR<ProductRelationFilter, productWhereInput>
     order_items?: Order_itemListRelationFilter
@@ -6511,6 +6507,7 @@ export namespace Prisma {
     buy_price?: SortOrder
     sell_price?: SortOrder
     image_link?: SortOrderInput | SortOrder
+    buy_link?: SortOrderInput | SortOrder
     priority_weight?: SortOrderInput | SortOrder
     product?: productOrderByWithRelationInput
     order_items?: order_itemOrderByRelationAggregateInput
@@ -6527,6 +6524,7 @@ export namespace Prisma {
     buy_price?: FloatFilter<"product_variations"> | number
     sell_price?: FloatFilter<"product_variations"> | number
     image_link?: StringNullableFilter<"product_variations"> | string | null
+    buy_link?: StringNullableFilter<"product_variations"> | string | null
     priority_weight?: FloatNullableFilter<"product_variations"> | number | null
     product?: XOR<ProductRelationFilter, productWhereInput>
     order_items?: Order_itemListRelationFilter
@@ -6540,6 +6538,7 @@ export namespace Prisma {
     buy_price?: SortOrder
     sell_price?: SortOrder
     image_link?: SortOrderInput | SortOrder
+    buy_link?: SortOrderInput | SortOrder
     priority_weight?: SortOrderInput | SortOrder
     _count?: product_variationsCountOrderByAggregateInput
     _avg?: product_variationsAvgOrderByAggregateInput
@@ -6559,6 +6558,7 @@ export namespace Prisma {
     buy_price?: FloatWithAggregatesFilter<"product_variations"> | number
     sell_price?: FloatWithAggregatesFilter<"product_variations"> | number
     image_link?: StringNullableWithAggregatesFilter<"product_variations"> | string | null
+    buy_link?: StringNullableWithAggregatesFilter<"product_variations"> | string | null
     priority_weight?: FloatNullableWithAggregatesFilter<"product_variations"> | number | null
   }
 
@@ -6658,7 +6658,6 @@ export namespace Prisma {
     description?: string | null
     shopee_id?: string | null
     targeted_stock: number
-    buy_link?: string | null
     product_images?: product_imagesCreateNestedManyWithoutProductInput
     product_variations?: product_variationsCreateNestedManyWithoutProductInput
   }
@@ -6669,7 +6668,6 @@ export namespace Prisma {
     description?: string | null
     shopee_id?: string | null
     targeted_stock: number
-    buy_link?: string | null
     product_images?: product_imagesUncheckedCreateNestedManyWithoutProductInput
     product_variations?: product_variationsUncheckedCreateNestedManyWithoutProductInput
   }
@@ -6679,7 +6677,6 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     shopee_id?: NullableStringFieldUpdateOperationsInput | string | null
     targeted_stock?: IntFieldUpdateOperationsInput | number
-    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     product_images?: product_imagesUpdateManyWithoutProductNestedInput
     product_variations?: product_variationsUpdateManyWithoutProductNestedInput
   }
@@ -6690,7 +6687,6 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     shopee_id?: NullableStringFieldUpdateOperationsInput | string | null
     targeted_stock?: IntFieldUpdateOperationsInput | number
-    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     product_images?: product_imagesUncheckedUpdateManyWithoutProductNestedInput
     product_variations?: product_variationsUncheckedUpdateManyWithoutProductNestedInput
   }
@@ -6701,7 +6697,6 @@ export namespace Prisma {
     description?: string | null
     shopee_id?: string | null
     targeted_stock: number
-    buy_link?: string | null
   }
 
   export type productUpdateManyMutationInput = {
@@ -6709,7 +6704,6 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     shopee_id?: NullableStringFieldUpdateOperationsInput | string | null
     targeted_stock?: IntFieldUpdateOperationsInput | number
-    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type productUncheckedUpdateManyInput = {
@@ -6718,7 +6712,6 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     shopee_id?: NullableStringFieldUpdateOperationsInput | string | null
     targeted_stock?: IntFieldUpdateOperationsInput | number
-    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type product_imagesCreateInput = {
@@ -6765,6 +6758,7 @@ export namespace Prisma {
     buy_price: number
     sell_price: number
     image_link?: string | null
+    buy_link?: string | null
     priority_weight?: number | null
     product: productCreateNestedOneWithoutProduct_variationsInput
     order_items?: order_itemCreateNestedManyWithoutProduct_variationInput
@@ -6778,6 +6772,7 @@ export namespace Prisma {
     buy_price: number
     sell_price: number
     image_link?: string | null
+    buy_link?: string | null
     priority_weight?: number | null
     order_items?: order_itemUncheckedCreateNestedManyWithoutProduct_variationInput
   }
@@ -6788,6 +6783,7 @@ export namespace Prisma {
     buy_price?: FloatFieldUpdateOperationsInput | number
     sell_price?: FloatFieldUpdateOperationsInput | number
     image_link?: NullableStringFieldUpdateOperationsInput | string | null
+    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     priority_weight?: NullableFloatFieldUpdateOperationsInput | number | null
     product?: productUpdateOneRequiredWithoutProduct_variationsNestedInput
     order_items?: order_itemUpdateManyWithoutProduct_variationNestedInput
@@ -6801,6 +6797,7 @@ export namespace Prisma {
     buy_price?: FloatFieldUpdateOperationsInput | number
     sell_price?: FloatFieldUpdateOperationsInput | number
     image_link?: NullableStringFieldUpdateOperationsInput | string | null
+    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     priority_weight?: NullableFloatFieldUpdateOperationsInput | number | null
     order_items?: order_itemUncheckedUpdateManyWithoutProduct_variationNestedInput
   }
@@ -6813,6 +6810,7 @@ export namespace Prisma {
     buy_price: number
     sell_price: number
     image_link?: string | null
+    buy_link?: string | null
     priority_weight?: number | null
   }
 
@@ -6822,6 +6820,7 @@ export namespace Prisma {
     buy_price?: FloatFieldUpdateOperationsInput | number
     sell_price?: FloatFieldUpdateOperationsInput | number
     image_link?: NullableStringFieldUpdateOperationsInput | string | null
+    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     priority_weight?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
@@ -6833,6 +6832,7 @@ export namespace Prisma {
     buy_price?: FloatFieldUpdateOperationsInput | number
     sell_price?: FloatFieldUpdateOperationsInput | number
     image_link?: NullableStringFieldUpdateOperationsInput | string | null
+    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     priority_weight?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
@@ -7026,7 +7026,6 @@ export namespace Prisma {
     description?: SortOrder
     shopee_id?: SortOrder
     targeted_stock?: SortOrder
-    buy_link?: SortOrder
   }
 
   export type productAvgOrderByAggregateInput = {
@@ -7040,7 +7039,6 @@ export namespace Prisma {
     description?: SortOrder
     shopee_id?: SortOrder
     targeted_stock?: SortOrder
-    buy_link?: SortOrder
   }
 
   export type productMinOrderByAggregateInput = {
@@ -7049,7 +7047,6 @@ export namespace Prisma {
     description?: SortOrder
     shopee_id?: SortOrder
     targeted_stock?: SortOrder
-    buy_link?: SortOrder
   }
 
   export type productSumOrderByAggregateInput = {
@@ -7156,6 +7153,7 @@ export namespace Prisma {
     buy_price?: SortOrder
     sell_price?: SortOrder
     image_link?: SortOrder
+    buy_link?: SortOrder
     priority_weight?: SortOrder
   }
 
@@ -7176,6 +7174,7 @@ export namespace Prisma {
     buy_price?: SortOrder
     sell_price?: SortOrder
     image_link?: SortOrder
+    buy_link?: SortOrder
     priority_weight?: SortOrder
   }
 
@@ -7187,6 +7186,7 @@ export namespace Prisma {
     buy_price?: SortOrder
     sell_price?: SortOrder
     image_link?: SortOrder
+    buy_link?: SortOrder
     priority_weight?: SortOrder
   }
 
@@ -7787,6 +7787,7 @@ export namespace Prisma {
     buy_price: number
     sell_price: number
     image_link?: string | null
+    buy_link?: string | null
     priority_weight?: number | null
     order_items?: order_itemCreateNestedManyWithoutProduct_variationInput
   }
@@ -7798,6 +7799,7 @@ export namespace Prisma {
     buy_price: number
     sell_price: number
     image_link?: string | null
+    buy_link?: string | null
     priority_weight?: number | null
     order_items?: order_itemUncheckedCreateNestedManyWithoutProduct_variationInput
   }
@@ -7864,6 +7866,7 @@ export namespace Prisma {
     buy_price?: FloatFilter<"product_variations"> | number
     sell_price?: FloatFilter<"product_variations"> | number
     image_link?: StringNullableFilter<"product_variations"> | string | null
+    buy_link?: StringNullableFilter<"product_variations"> | string | null
     priority_weight?: FloatNullableFilter<"product_variations"> | number | null
   }
 
@@ -7872,7 +7875,6 @@ export namespace Prisma {
     description?: string | null
     shopee_id?: string | null
     targeted_stock: number
-    buy_link?: string | null
     product_variations?: product_variationsCreateNestedManyWithoutProductInput
   }
 
@@ -7882,7 +7884,6 @@ export namespace Prisma {
     description?: string | null
     shopee_id?: string | null
     targeted_stock: number
-    buy_link?: string | null
     product_variations?: product_variationsUncheckedCreateNestedManyWithoutProductInput
   }
 
@@ -7907,7 +7908,6 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     shopee_id?: NullableStringFieldUpdateOperationsInput | string | null
     targeted_stock?: IntFieldUpdateOperationsInput | number
-    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     product_variations?: product_variationsUpdateManyWithoutProductNestedInput
   }
 
@@ -7917,7 +7917,6 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     shopee_id?: NullableStringFieldUpdateOperationsInput | string | null
     targeted_stock?: IntFieldUpdateOperationsInput | number
-    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     product_variations?: product_variationsUncheckedUpdateManyWithoutProductNestedInput
   }
 
@@ -7926,7 +7925,6 @@ export namespace Prisma {
     description?: string | null
     shopee_id?: string | null
     targeted_stock: number
-    buy_link?: string | null
     product_images?: product_imagesCreateNestedManyWithoutProductInput
   }
 
@@ -7936,7 +7934,6 @@ export namespace Prisma {
     description?: string | null
     shopee_id?: string | null
     targeted_stock: number
-    buy_link?: string | null
     product_images?: product_imagesUncheckedCreateNestedManyWithoutProductInput
   }
 
@@ -7982,7 +7979,6 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     shopee_id?: NullableStringFieldUpdateOperationsInput | string | null
     targeted_stock?: IntFieldUpdateOperationsInput | number
-    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     product_images?: product_imagesUpdateManyWithoutProductNestedInput
   }
 
@@ -7992,7 +7988,6 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     shopee_id?: NullableStringFieldUpdateOperationsInput | string | null
     targeted_stock?: IntFieldUpdateOperationsInput | number
-    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     product_images?: product_imagesUncheckedUpdateManyWithoutProductNestedInput
   }
 
@@ -8018,6 +8013,7 @@ export namespace Prisma {
     buy_price: number
     sell_price: number
     image_link?: string | null
+    buy_link?: string | null
     priority_weight?: number | null
     product: productCreateNestedOneWithoutProduct_variationsInput
   }
@@ -8030,6 +8026,7 @@ export namespace Prisma {
     buy_price: number
     sell_price: number
     image_link?: string | null
+    buy_link?: string | null
     priority_weight?: number | null
   }
 
@@ -8069,6 +8066,7 @@ export namespace Prisma {
     buy_price?: FloatFieldUpdateOperationsInput | number
     sell_price?: FloatFieldUpdateOperationsInput | number
     image_link?: NullableStringFieldUpdateOperationsInput | string | null
+    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     priority_weight?: NullableFloatFieldUpdateOperationsInput | number | null
     product?: productUpdateOneRequiredWithoutProduct_variationsNestedInput
   }
@@ -8081,6 +8079,7 @@ export namespace Prisma {
     buy_price?: FloatFieldUpdateOperationsInput | number
     sell_price?: FloatFieldUpdateOperationsInput | number
     image_link?: NullableStringFieldUpdateOperationsInput | string | null
+    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     priority_weight?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
@@ -8139,6 +8138,7 @@ export namespace Prisma {
     buy_price: number
     sell_price: number
     image_link?: string | null
+    buy_link?: string | null
     priority_weight?: number | null
   }
 
@@ -8162,6 +8162,7 @@ export namespace Prisma {
     buy_price?: FloatFieldUpdateOperationsInput | number
     sell_price?: FloatFieldUpdateOperationsInput | number
     image_link?: NullableStringFieldUpdateOperationsInput | string | null
+    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     priority_weight?: NullableFloatFieldUpdateOperationsInput | number | null
     order_items?: order_itemUpdateManyWithoutProduct_variationNestedInput
   }
@@ -8173,6 +8174,7 @@ export namespace Prisma {
     buy_price?: FloatFieldUpdateOperationsInput | number
     sell_price?: FloatFieldUpdateOperationsInput | number
     image_link?: NullableStringFieldUpdateOperationsInput | string | null
+    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     priority_weight?: NullableFloatFieldUpdateOperationsInput | number | null
     order_items?: order_itemUncheckedUpdateManyWithoutProduct_variationNestedInput
   }
@@ -8184,6 +8186,7 @@ export namespace Prisma {
     buy_price?: FloatFieldUpdateOperationsInput | number
     sell_price?: FloatFieldUpdateOperationsInput | number
     image_link?: NullableStringFieldUpdateOperationsInput | string | null
+    buy_link?: NullableStringFieldUpdateOperationsInput | string | null
     priority_weight?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
