@@ -171,7 +171,7 @@ export default ({ params }) => {
 
                 {/* Informações gerais */}
                 <div className="flex-c-8">
-                    <h1 className="text-4xl font-bold w-full">Informações gerais</h1>
+                    <h1 className="text-4xl font-bold w-full">Informações 123 gerais</h1>
 
                     <div className="flex-c-6">
                         <Input
