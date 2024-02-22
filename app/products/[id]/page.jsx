@@ -179,6 +179,7 @@ export default ({ params }) => {
                             name="name"
                             initialValue={product.name}
                             onChange={(e) => handleChange(e)}
+                            required
                         />
 
                         <Input
@@ -187,6 +188,7 @@ export default ({ params }) => {
                             initialValue={product.description}
                             onChange={(e) => handleChange(e)}
                             type="textarea"
+                            required
                         />
 
                         <div className="flex-r-6">
@@ -195,6 +197,7 @@ export default ({ params }) => {
                                 name="shopeeId"
                                 initialValue={product.shopeeId}
                                 onChange={(e) => handleChange(e)}
+                                required
                             />
 
                             <Button
@@ -278,6 +281,7 @@ export default ({ params }) => {
                                 label="Link de compra"
                                 initialValue={productVariations[0].buyLink}
                                 onChange={(e) => handleChangeVariation(e, 0)}
+                                required
                             />
                             <Input
                                 id="buyPrice"
@@ -307,6 +311,7 @@ export default ({ params }) => {
                                         label={"Nome da variação"}
                                         initialValue={variation.name}
                                         onChange={(e) => handleChangeVariation(e, index)}
+                                        required
                                     />
                                     <Input
                                         id={"stock" + (index + 1)}
@@ -323,6 +328,7 @@ export default ({ params }) => {
                                         label={"Link de compra"}
                                         initialValue={variation.buyLink}
                                         onChange={(e) => handleChangeVariation(e, index)}
+                                        required
                                     />
                                     <Input
                                         id={"buyPrice" + (index + 1)}
