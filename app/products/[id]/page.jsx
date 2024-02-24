@@ -264,7 +264,60 @@ export default ({ params }) => {
                         {productVariations.length > 1 && <Button onClick={handleApplyToAll} text="Aplicar a todos" />}
                         <Button onClick={handleAddVariation} color="green">Adicionar variações</Button>
                     </div>
-                    {productVariations.length == 1
+                    {productVariations.map((variation, index) => (
+                        <div key={index} className={productVariations.length == 1 ? "flex-c-6" : "flex-r-6"}>
+                            {productVariations.length > 1 && <Input
+                                id={"variationName" + (index + 1)}
+                                name="name"
+                                label={"Nome da variação"}
+                                initialValue={variation.name}
+                                onChange={(e) => handleChangeVariation(e, index)}
+                                required
+                            />}
+                            <Input
+                                id={"stock" + (index + 1)}
+                                name="stock"
+                                label={"Estoque atual"}
+                                type="number"
+                                initialValue={variation.stock}
+                                onChange={(e) => handleChangeVariation(e, index)}
+                                required
+                            />
+                            <Input
+                                id={"buyLink" + (index + 1)}
+                                name="buyLink"
+                                label={"Link de compra"}
+                                initialValue={variation.buyLink}
+                                onChange={(e) => handleChangeVariation(e, index)}
+                                required
+                            />
+                            <Input
+                                id={"buyPrice" + (index + 1)}
+                                name="buyPrice"
+                                label={"Preço de compra (USD)"}
+                                type="currency"
+                                initialValue={variation.buyPrice}
+                                onChange={(e) => handleChangeVariation(e, index)}
+                                required
+                            />
+                            <Input
+                                id={"sellPrice" + (index + 1)}
+                                name="sellPrice"
+                                label={"Preço de venda (R$)"}
+                                type="currency"
+                                initialValue={variation.sellPrice}
+                                onChange={(e) => handleChangeVariation(e, index)}
+                                required
+                            />
+                            {productVariations.length > 1 && <Button
+                                onClick={() => handleRemoveVariation(index)}
+                                color="red"
+                                square
+                                text="x"
+                            />}
+                        </div>
+                    ))}
+                    {/* {productVariations.length == 1
                         ? <div className="flex-c-6">
                             <Input
                                 id="stock"
@@ -357,7 +410,7 @@ export default ({ params }) => {
                                 </div>
                             ))}
                         </div>
-                    }
+                    } */}
                 </div>
 
                 {/* Dev Buttons to debug */}
