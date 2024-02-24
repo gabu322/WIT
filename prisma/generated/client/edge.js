@@ -159,7 +159,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "H:\\Projects\\WIT\\web\\prisma\\generated\\client",
+      "value": "C:\\Users\\USUARIO\\Desktop\\gabu\\WIT\\WIT\\prisma\\generated\\client",
       "fromEnvVar": null
     },
     "config": {
