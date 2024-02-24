@@ -248,6 +248,7 @@ export default ({ params }) => {
                                         handleRemoveImage(index)
                                     }}
                                     square
+                                    color={"transparent"}
                                     text="-"
                                 />
 
@@ -309,12 +310,14 @@ export default ({ params }) => {
                                 onChange={(e) => handleChangeVariation(e, index)}
                                 required
                             />
-                            {productVariations.length > 1 && <Button
-                                onClick={() => handleRemoveVariation(index)}
-                                color="red"
-                                square
-                                text="x"
-                            />}
+                            {productVariations.length > 1 &&
+                                <Button
+                                    onClick={() => handleRemoveVariation(index)}
+                                    color="red"
+                                    square
+                                    text="X"
+                                />
+                            }
                         </div>
                     ))}
                 </div>
