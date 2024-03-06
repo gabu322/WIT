@@ -25,11 +25,11 @@ model product {
     targeted_stock Int // Targeted stock level for the product
 
     // Define relationships
-    product_images     product_images[] // Images associated with the product
-    product_variations product_variations[] // Variations of the product
+    product_image     product_image[] // Images associated with the product
+    product_variation product_variation[] // Variations of the product
 }
 
-model product_images {
+model product_image {
     id         Int    @id @default(autoincrement()) // Unique identifier for product images
     product_id Int // ID of the associated product
     link       String // Link to the image
@@ -38,7 +38,7 @@ model product_images {
     product product @relation(fields: [product_id], references: [id])
 }
 
-model product_variations {
+model product_variation {
     id              Int     @id @default(autoincrement()) // Unique identifier for product variations
     product_id      Int // ID of the associated product
     name            String // Name of the variation
@@ -61,6 +61,6 @@ model order_item {
     quantity             Int // Quantity of the product variation in the order
 
     // Define relationships
-    product_variation product_variations @relation(fields: [product_variation_id], references: [id])
+    product_variation product_variation @relation(fields: [product_variation_id], references: [id])
     order             order              @relation(fields: [order_id], references: [id])
 }

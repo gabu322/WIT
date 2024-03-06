@@ -17,9 +17,9 @@ export async function GET(req, res) {
         // Get productVariations based on where clause
         let productVariations;
         if (Object.keys(whereClause).length > 0) {
-            productVariations = await prisma.product_variations.findMany({ where: whereClause });
+            productVariations = await prisma.product_variation.findMany({ where: whereClause });
         } else {
-            productVariations = await prisma.product_variations.findMany();
+            productVariations = await prisma.product_variation.findMany();
         }
 
         // If no productVariations are found, return a 404 response
@@ -55,7 +55,7 @@ export async function POST(req, res) {
         if (Array.isArray(body)) {
             // If it's an array, create each variation separately
             const createdVariations = await Promise.all(body.map(async (variation) => {
-                const createdVariation = await prisma.product_variations.create({
+                const createdVariation = await prisma.product_variation.create({
                     data: {
                         product_id: parseInt(variation.productId, 10),
                         name: variation.name,
@@ -73,7 +73,7 @@ export async function POST(req, res) {
             return new Response(JSON.stringify(createdVariations), { status: 200 });
         } else {
             // If it's a single variation, create it directly
-            const createdVariation = await prisma.product_variations.create({
+            const createdVariation = await prisma.product_variation.create({
                 data: {
                     product_id: parseInt(body.productId, 10),
                     name: body.name,
@@ -99,12 +99,14 @@ export async function PUT(req, res) {
 
         // Check if the body is an array
         if (Array.isArray(body)) {
+
             // If it's an array, update each variation separately
             const updatedVariations = await Promise.all(body.map(async (variation) => {
                 // Check if the variation has an id
                 if (!variation.id) {
+                    console.log(variation)
                     // If it doesn't, create a new variation
-                    const createdVariation = await prisma.product_variations.create({
+                    const createdVariation = await prisma.product_variation.create({
                         data: {
                             product_id: parseInt(variation.productId, 10),
                             name: variation.name,
@@ -119,7 +121,7 @@ export async function PUT(req, res) {
 
                 } else {
                     // If it does, update the variation
-                    const updatedVariation = await prisma.product_variations.update({
+                    const updatedVariation = await prisma.product_variation.update({
                         where: {
                             id: parseInt(variation.id, 10),
                         },
@@ -143,7 +145,7 @@ export async function PUT(req, res) {
             // Check if the variation has an id
             if (!body.id) {
                 // If it doesn't, create a new variation
-                const createdVariation = await prisma.product_variations.create({
+                const createdVariation = await prisma.product_variation.create({
                     data: {
                         product_id: parseInt(body.productId, 10),
                         name: body.name,
@@ -157,7 +159,7 @@ export async function PUT(req, res) {
                 return new Response(JSON.stringify(createdVariation), { status: 200 });
             } else {
                 // If it does, update the variation
-                const updatedVariation = await prisma.product_variations.update({
+                const updatedVariation = await prisma.product_variation.update({
                     where: {
                         id: parseInt(body.id, 10),
                     },
@@ -175,7 +177,7 @@ export async function PUT(req, res) {
             }
         }
     } catch (error) {
-        return new Response(JSON.stringify("Erro na requisição"), { status: 405 });
+        return new Response(JSON.stringify("Request error"), { status: 500 });
     }
 };
 
@@ -187,7 +189,7 @@ export async function DELETE(req, res) {
         if (Array.isArray(body)) {
             // If it's an array, delete each variation separately
             const deletedVariations = await Promise.all(body.map(async (variation) => {
-                const deletedVariation = await prisma.product_variations.delete({
+                const deletedVariation = await prisma.product_variation.delete({
                     where: {
                         id: parseInt(variation.id, 10),
                     },
@@ -198,7 +200,7 @@ export async function DELETE(req, res) {
 
             return new Response(JSON.stringify(deletedVariations), { status: 200 });
         } else { // If it's a single variation, delete it directly
-            const deletedVariation = await prisma.product_variations.delete({
+            const deletedVariation = await prisma.product_variation.delete({
                 where: {
                     id: parseInt(body.id, 10),
                 },

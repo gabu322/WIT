@@ -15,9 +15,9 @@ export async function GET(req, res) {
         //Get productImages based on where clause
         let productImages;
         if (Object.keys(whereClause).length > 0) {
-            productImages = await prisma.product_images.findMany({ where: whereClause });
+            productImages = await prisma.product_image.findMany({ where: whereClause });
         } else {
-            productImages = await prisma.product_images.findMany();
+            productImages = await prisma.product_image.findMany();
         }
 
         //If no productImages are found, return a 404 response
@@ -48,7 +48,7 @@ export async function POST(req, res) {
         if (Array.isArray(body)) {
             // If it's an array, create each image separately
             const createdImages = await Promise.all(body.map(async (image) => {
-                const createdImage = await prisma.product_images.create({
+                const createdImage = await prisma.product_image.create({
                     data: {
                         product_id: parseInt(image.productId, 10),
                         link: image.link,
@@ -63,7 +63,7 @@ export async function POST(req, res) {
             });
         } else {
             // If it's a single image, create it directly
-            const createdImage = await prisma.product_images.create({
+            const createdImage = await prisma.product_image.create({
                 data: {
                     product_id: parseInt(body.productId, 10),
                     link: body.link,
@@ -88,7 +88,7 @@ export async function PUT(req, res) {
                 // Check if the image has an id
                 if (!image.id) {
                     // If it doesn't, create a new image
-                    const createdImage = await prisma.product_images.create({
+                    const createdImage = await prisma.product_image.create({
                         data: {
                             product_id: parseInt(image.productId, 10),
                             link: image.link,
@@ -98,7 +98,7 @@ export async function PUT(req, res) {
 
                 } else {
                     // If it does, update the image
-                    const updatedImage = await prisma.product_images.update({
+                    const updatedImage = await prisma.product_image.update({
                         where: {
                             id: parseInt(image.id, 10),
                         },
@@ -117,7 +117,7 @@ export async function PUT(req, res) {
             // Check if the image has an id
             if (!body.id) {
                 // If it doesn't, create a new image
-                const createdImage = await prisma.product_images.create({
+                const createdImage = await prisma.product_image.create({
                     data: {
                         product_id: parseInt(body.productId, 10),
                         link: body.link,
@@ -127,7 +127,7 @@ export async function PUT(req, res) {
                 return new Response(JSON.stringify("Image created", createdImage), { status: 200 });
             } else {
                 // If it does, update the image
-                const updatedImage = await prisma.product_images.update({
+                const updatedImage = await prisma.product_image.update({
                     where: {
                         id: parseInt(body.id, 10),
                     },
@@ -155,7 +155,7 @@ export async function DELETE(req, res) {
         if (Array.isArray(body)) {
             //If it's an array, delete each image separately
             const deletedImages = await Promise.all(body.map(async (image) => {
-                const deletedImage = await prisma.product_images.delete({
+                const deletedImage = await prisma.product_image.delete({
                     where: {
                         id: parseInt(image.id, 10),
                     },
@@ -167,7 +167,7 @@ export async function DELETE(req, res) {
             return new Response(JSON.stringify("Images deleted", deletedImages), { status: 200 });
         } else {
             // If it's a single image, delete it directly
-            const deletedImage = await prisma.product_images.delete({
+            const deletedImage = await prisma.product_image.delete({
                 where: {
                     id: parseInt(body.id, 10),
                 },
