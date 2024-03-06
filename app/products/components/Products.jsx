@@ -1,9 +1,7 @@
 'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import Button from "../../components/Button";
-import Carrousel from "../../components/Carrousel";
+import Button from "@components/Button";
+import Carrousel from "@components/Carrousel";
 
 
 const calculateColor = (stock, expectedStock = 100) => {
@@ -16,7 +14,7 @@ export default function Products({ product }) {
     // });
 
 
-    const totalPercentage = product.productVariations.reduce((sum, variation) => {
+    const totalPercentage = product.productVariations?.reduce((sum, variation) => {
         const { stock, expectedStock } = variation;
         const percentage = (stock / expectedStock) * 100 / product.productVariations.length;
 
@@ -27,10 +25,7 @@ export default function Products({ product }) {
 
     const images = (product.productImages?.map((image) => {
         return image.link;
-    }).filter((link) => link)).concat(
-        product.productVariations.map((variation) => {
-            return variation.imageLink;
-        }).filter((link) => link));
+    }).filter((link) => link));
     // console.log(images)
 
     return <div className="shadow-xl rounded-lg overflow-hidden border border-gray-100 relative" style={{
@@ -43,7 +38,7 @@ export default function Products({ product }) {
         <div className="w-full h-1/2 flex flex-col p-4 justify-between">
             <div className="w-full flex flex-col">
                 <h3 className="font-bold">{product.name.split(" - ")[0]}</h3>
-                <div>Avarage stock: <b style={{ color: calculateColor(totalPercentage.toFixed()) }}>{totalPercentage.toFixed()}%</b></div>
+                <div>Avarage stock: <b style={{ color: calculateColor(totalPercentage?.toFixed()) }}>{totalPercentage?.toFixed()}%</b></div>
             </div>
 
             <div className="flex flex-row justify-between w-full gap-4">

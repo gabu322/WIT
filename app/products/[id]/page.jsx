@@ -1,11 +1,13 @@
 'use client';
 
-import Button from "@components/Button";
-import Input from "@components/Input";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
-import Main from "@components/Main";
+
+import { toast, ToastContainer } from "react-toastify";
+
+import Button from "@components/Button";
+import Input from "@components/Input";
 import Alert from "@components/Alert";
 
 export default ({ params }) => {
@@ -40,11 +42,13 @@ export default ({ params }) => {
         setDevMode(location.search.includes('dev'));
 
         const fetchData = async () => {
+            const fetchingToast = toast.loading('Buscando dados do produto...', { position: "top-right" })
             // await axios.get(`/api/products?id=${params?.id}`)
             await axios.get(`/api/products/${params?.id}`)
                 .then(res => setProduct(res.data))
                 .catch(error => {
                     setAlert(error)
+                    toast.update(fetchingToast, { render: "Produto não encontrado", type: "error", isLoading: false, autoClose: 5000 });
                     return Promise.reject('Product not found');
                 });
 
@@ -53,6 +57,8 @@ export default ({ params }) => {
 
             await axios.get(`/api/productImages?productId=${params?.id}`)
                 .then(res => setProductImages(res.data))
+
+            toast.update(fetchingToast, { render: "Informações encontradas", type: "success", isLoading: false, autoClose: 5000 });
         };
 
         if (params?.id > 0) {
@@ -72,6 +78,7 @@ export default ({ params }) => {
             buyPrice: '',
             buyLink: '',
             sellPrice: '',
+            priorityWheight: '',
         };
 
         let newProductVariations = [...productVariations];
@@ -135,10 +142,14 @@ export default ({ params }) => {
 
         try {
             if (params?.id > 0) {
+                const updatingToast = toast.loading('Atualizando produto...');
                 console.log("Updating product")
                 await axios.put('/api/products', product);
+                console.log("Updating product variations")
                 await axios.put('/api/productVariations', productVariations);
+                console.log("Updating product images")
                 await axios.put('/api/productImages', productImages);
+                toast.update(updatingToast, { render: "Produto atualizado", type: "success", isLoading: false, autoClose: 5000 });
             } else {
                 //check if exists a product with the same name
                 const existingProduct = await axios.get(`/api/products?name=${product.name}`);

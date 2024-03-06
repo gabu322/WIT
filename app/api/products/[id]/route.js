@@ -16,7 +16,7 @@ export async function GET(req, res) {
         if (!product) {
             return new Response(JSON.stringify("Produto não encontrado"), { status: 404 });
         }
-        
+
         // Transform product to a frontend friendly format
         const formatedProduct = {
             id: product.id,
@@ -29,7 +29,7 @@ export async function GET(req, res) {
         // Return the formated product
         return new Response(JSON.stringify(formatedProduct), { status: 200 });
     } catch (error) {
-        return new Response(JSON.stringify("Request error in productImages with GET"), { status: 500 });
+        return new Response(JSON.stringify("Request error"), { status: 500 });
     }
 }
 

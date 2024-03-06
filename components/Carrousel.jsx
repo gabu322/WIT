@@ -15,7 +15,7 @@ export default function Carousel({ images }){
 
     return (
         <div className="relative w-full h-full">
-            {images.map((image, index) => (
+            {images?.map((image, index) => (
                 <img
                     key={index}
                     src={image}

@@ -3,7 +3,7 @@ import { prisma } from "@app/api/client";
 export async function GET(req, res) {
     try {
         // Get products
-        const products = await prisma.product.findMany();
+        const products = await prisma.product.findMany({});
 
         // Map products to a frontend friendly format
         const formatedProducts = products.map(product => {
@@ -15,7 +15,7 @@ export async function GET(req, res) {
                 targetedStock: product.targeted_stock,
             }
         });
-
+        console.log(formatedProducts)
         // Return the formated products
         return new Response(JSON.stringify(formatedProducts), { status: 200 });
     } catch (error) {
@@ -77,7 +77,7 @@ export async function PUT(req, res) {
                     name: body.name,
                     description: body.description,
                     shopee_id: body.shopeeId,
-                    targeted_stock: body.targetedStock,
+                    targeted_stock: parseInt(body.targetedStock),
                 },
             });
 
