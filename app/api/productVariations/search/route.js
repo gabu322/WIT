@@ -11,7 +11,6 @@ export async function GET(req, res) {
         if (searchParams.get('productId')) {
             whereClause.product_id = parseInt(searchParams.get('productId'), 10);
         }
-        console.log("here")
 
         // Get productVariations based on where clause
         let productVariations = await prisma.product_variation.findMany({

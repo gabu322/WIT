@@ -35,7 +35,6 @@ export async function GET(req, res) {
         // Return the formated products
         return new Response(JSON.stringify(formatedProducts), { status: 200 });
     } catch (error) {
-        console.log(error);
         return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
 }

@@ -26,7 +26,6 @@ export default function Products({ product }) {
     const images = (product.productImages?.map((image) => {
         return image.link;
     }).filter((link) => link));
-    // console.log(images)
 
     return <div className="shadow-xl rounded-lg overflow-hidden border border-gray-100 relative" style={{
         backgroundColor: "white",

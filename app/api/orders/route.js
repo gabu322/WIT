@@ -13,7 +13,6 @@ export async function POST(req, res) {
         return new Response(JSON.stringify(order), { status: 200 });
     }
     catch (error) {
-        console.log(error);
         return new Response(JSON.stringify("Request error"), {
             status: 405
         });

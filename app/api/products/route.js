@@ -15,11 +15,9 @@ export async function GET(req, res) {
                 targetedStock: product.targeted_stock,
             }
         });
-        console.log(formatedProducts)
         // Return the formated products
         return new Response(JSON.stringify(formatedProducts), { status: 200 });
     } catch (error) {
-        console.log(error);
         return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
 };
@@ -42,7 +40,6 @@ export async function POST(req, res) {
         // Return the new product
         return new Response(JSON.stringify(product), { status: 200 })
     } catch (error) {
-        console.log(error);
         return new Response(JSON.stringify("Erro na requisição"), { status: 405 })
     }
 };
@@ -85,7 +82,6 @@ export async function PUT(req, res) {
             return new Response(JSON.stringify(updatedProduct), { status: 200 });
         }
     } catch (error) {
-        console.log(error);
         return new Response(JSON.stringify("Erro na requisição"), { status: 405 });
     }
 };

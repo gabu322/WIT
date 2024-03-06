@@ -34,7 +34,7 @@ export default ({ params }) => {
         buyPrice: '',
         buyLink: '',
         sellPrice: '',
-        priorityWheight: '',
+        priorityWeight: '',
     }]);
 
     const [newImageLink, setNewImageLink] = useState('');
@@ -90,13 +90,14 @@ export default ({ params }) => {
         }
 
         newProductVariations.push({
+            productId: product?.id,
             name: '',
             stock: 0,
             imageLink: '',
             buyPrice: '',
             buyLink: '',
             sellPrice: '',
-            priorityWheight: '',
+            priorityWeight: '',
         });
 
 
@@ -165,11 +166,13 @@ export default ({ params }) => {
             if (params?.id > 0) {
                 const updatingToast = toast.loading('Atualizando produto...');
                 console.log("Updating product")
+
                 await axios.put('/api/products', product);
                 console.log("Updating product variations")
                 await axios.put('/api/productVariations', productVariations);
                 console.log("Updating product images")
                 await axios.put('/api/productImages', productImages);
+
                 toast.update(updatingToast, { render: "Produto atualizado", type: "success", isLoading: false, autoClose: 5000 });
             } else {
                 //check if exists a product with the same name

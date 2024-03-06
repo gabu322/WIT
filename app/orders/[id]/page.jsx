@@ -25,7 +25,6 @@ export default function ({ params }) {
         const response = await axios.post('/api/orders', {
             date: date,
         });
-        console.log(response.data)
         const items = orderItems.flatMap((item) => {
             return item.variations.map((variation) => {
                 return {
@@ -36,7 +35,7 @@ export default function ({ params }) {
                 };
             });
         });
-        console.log(items)
+        
         axios.post('/api/orderItems', items);
     };
 
