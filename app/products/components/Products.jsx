@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import Button from "../../components/Button";
-import Carrousel from "../../components/Carrousel";
+import Button from "@components/Button";
+import Carrousel from "@components/Carrousel";
 
 
 const calculateColor = (stock, expectedStock = 100) => {
