@@ -10,6 +10,10 @@ import Button from "@components/Button";
 import Input from "@components/Input";
 import Alert from "@components/Alert";
 
+/** Page to create or edit a product
+ * TODO - Add ways to remove images and variations
+ * TODO - Add a way handle less significant errors
+**/
 export default ({ params }) => {
     const router = useRouter();
 
@@ -30,6 +34,7 @@ export default ({ params }) => {
         buyPrice: '',
         buyLink: '',
         sellPrice: '',
+        priorityWeight: '',
     }]);
 
     const [newImageLink, setNewImageLink] = useState('');
@@ -41,8 +46,11 @@ export default ({ params }) => {
     useEffect(() => {
         setDevMode(location.search.includes('dev'));
 
+        // Fetch the product details and its images and variations
         const fetchData = async () => {
+
             const fetchingToast = toast.loading('Buscando dados do produto...', { position: "top-right" })
+
             // await axios.get(`/api/products?id=${params?.id}`)
             await axios.get(`/api/products/${params?.id}`)
                 .then(res => setProduct(res.data))
@@ -52,57 +60,66 @@ export default ({ params }) => {
                     return Promise.reject('Product not found');
                 });
 
-            await axios.get(`/api/productVariations?productId=${params?.id}`)
+            await axios.get(`/api/productVariations/search?productId=${params?.id}`)
                 .then(res => setProductVariations(res.data))
 
-            await axios.get(`/api/productImages?productId=${params?.id}`)
+            await axios.get(`/api/productImages/search?productId=${params?.id}`)
                 .then(res => setProductImages(res.data))
 
             toast.update(fetchingToast, { render: "Informações encontradas", type: "success", isLoading: false, autoClose: 5000 });
         };
 
+        // If is the id of a existing product, fetch the product details
         if (params?.id > 0) {
             fetchData();
         }
     }, [params?.id]);
 
+    // Function to handle the changes in the product details
     const handleChange = (e) => {
         setProduct({ ...product, [e.target.name]: e.target.value });
     };
 
+    // Function to add a new variation
     const handleAddVariation = () => {
-        const newVariation = {
+        let newProductVariations = [...productVariations];
+
+        // If there was only one variation, reset its name to empty
+        if (newProductVariations.length === 1) {
+            newProductVariations[0] = { ...newProductVariations[0], name: '' };
+        }
+
+        newProductVariations.push({
+            productId: product?.id,
             name: '',
             stock: 0,
             imageLink: '',
             buyPrice: '',
             buyLink: '',
             sellPrice: '',
-            priorityWheight: '',
-        };
+            priorityWeight: '',
+        });
 
-        let newProductVariations = [...productVariations];
-
-        if (newProductVariations.length === 1) {
-            newProductVariations[0] = { ...newProductVariations[0], name: '' };
-        }
-
-        newProductVariations.push(newVariation);
 
         setProductVariations(newProductVariations);
     };
 
+    // Function to handle the changes in the variations
     const handleChangeVariation = (e, index) => {
         const updatedVariations = [...productVariations];
+
         updatedVariations[index] = { ...updatedVariations[index], [e.target.name]: e.target.value };
+
         setProductVariations(updatedVariations);
     };
 
+    // Function to remove a variation, aways keeping at least one
     const handleRemoveVariation = (index) => {
         if (productVariations.length > 1) {
             const updatedVariations = [...productVariations];
             updatedVariations.splice(index, 1);
 
+            // If there is only one variation left, reset its name to 'unique'
             if (updatedVariations.length == 1) {
                 updatedVariations[0].name = 'unique';
             }
@@ -111,12 +128,17 @@ export default ({ params }) => {
         }
     };
 
+    // Function to add a new image, up to 5
     const handleAddImage = (imageLink) => {
-        console.log(imageLink)
-        if (productImages.length < 5)
-            setProductImages([...productImages, { productId: product?.id, link: imageLink }]);
+        if (productImages.length < 5) {
+            setProductImages([...productImages, {
+                productId: product?.id,
+                link: imageLink
+            }]);
+        }
     };
 
+    // Function to remove an image
     const handleRemoveImage = (index) => {
         const updatedImages = [...productImages];
         updatedImages.splice(index, 1);
@@ -144,11 +166,13 @@ export default ({ params }) => {
             if (params?.id > 0) {
                 const updatingToast = toast.loading('Atualizando produto...');
                 console.log("Updating product")
+
                 await axios.put('/api/products', product);
                 console.log("Updating product variations")
                 await axios.put('/api/productVariations', productVariations);
                 console.log("Updating product images")
                 await axios.put('/api/productImages', productImages);
+
                 toast.update(updatingToast, { render: "Produto atualizado", type: "success", isLoading: false, autoClose: 5000 });
             } else {
                 //check if exists a product with the same name
@@ -156,7 +180,12 @@ export default ({ params }) => {
 
                 if (existingProduct.data.length > 0) {
                     setAlert('Produto já existe');
-                    return;
+                    throw new Error('Product already exists');
+                }
+
+                if(productVariations.length < 1){
+                    setAlert('Adicione pelo menos uma variação');
+                    throw new Error('No variations');
                 }
                 const newProductId = await axios.post('/api/products', product);
 
@@ -259,6 +288,7 @@ export default ({ params }) => {
                                         handleRemoveImage(index)
                                     }}
                                     square
+                                    color={"transparent"}
                                     text="-"
                                 />
 
@@ -320,12 +350,14 @@ export default ({ params }) => {
                                 onChange={(e) => handleChangeVariation(e, index)}
                                 required
                             />
-                            {productVariations.length > 1 && <Button
-                                onClick={() => handleRemoveVariation(index)}
-                                color="red"
-                                square
-                                text="x"
-                            />}
+                            {productVariations.length > 1 &&
+                                <Button
+                                    onClick={() => handleRemoveVariation(index)}
+                                    color="red"
+                                    square
+                                    text="X"
+                                />
+                            }
                         </div>
                     ))}
                 </div>

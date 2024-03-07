@@ -3,8 +3,6 @@ import { prisma } from "@app/api/client";
 export async function POST(req, res) {
     try {
         const body = await req.json();
-        console.log('body :>> ', body);
-
 
         const createdItems = await Promise.all(body.map(async (item) => {
             const createdItem = await prisma.orderItems.create({

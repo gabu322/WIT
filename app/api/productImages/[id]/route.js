@@ -6,7 +6,7 @@ export async function GET(req, res) {
         const { id } = res.params;
 
         // Get productImage based on id
-        const productImage = await prisma.productImages.findUnique({
+        const productImage = await prisma.product_images.findUnique({
             where: {
                 id: parseInt(id, 10)
             }

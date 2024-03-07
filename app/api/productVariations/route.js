@@ -88,7 +88,6 @@ export async function POST(req, res) {
             return new Response(JSON.stringify(createdVariation), { status: 200 });
         }
     } catch (error) {
-        console.log(error);
         return new Response(JSON.stringify("Request error"), { status: 405 });
     }
 }
@@ -106,18 +105,23 @@ export async function PUT(req, res) {
                 if (!variation.id) {
                     console.log(variation)
                     // If it doesn't, create a new variation
-                    const createdVariation = await prisma.product_variation.create({
-                        data: {
-                            product_id: parseInt(variation.productId, 10),
-                            name: variation.name,
-                            stock: parseInt(variation.stock, 10),
-                            buy_price: parseFloat(variation.buyPrice),
-                            sell_price: parseFloat(variation.sellPrice),
-                            image_link: variation.imageLink,
-                            priority_weight: parseInt(variation.priorityWeight, 10),
-                        },
-                    });
-                    return createdVariation;
+                    try {
+                        const createdVariation = await prisma.product_variation.create({
+                            data: {
+                                product_id: parseInt(variation.productId, 10),
+                                name: variation.name,
+                                stock: parseInt(variation.stock, 10),
+                                buy_price: parseFloat(variation.buyPrice),
+                                sell_price: parseFloat(variation.sellPrice),
+                                buy_link: variation.buyLink,
+                                image_link: variation.imageLink,
+                                priority_weight: parseInt(variation.priorityWeight, 10),
+                            },
+                        });
+                        return createdVariation;
+                    } catch (error) {
+                        console.error(error);
+                    }
 
                 } else {
                     // If it does, update the variation
@@ -131,6 +135,7 @@ export async function PUT(req, res) {
                             stock: parseInt(variation.stock, 10),
                             buy_price: parseFloat(variation.buyPrice),
                             sell_price: parseFloat(variation.sellPrice),
+                            buy_link: variation.buyLink,
                             image_link: variation.imageLink,
                             priority_weight: parseInt(variation.priorityWeight, 10),
                         },
@@ -152,6 +157,7 @@ export async function PUT(req, res) {
                         stock: parseInt(body.stock, 10),
                         buy_price: parseFloat(body.buyPrice),
                         sell_price: parseFloat(body.sellPrice),
+                        buy_link: body.buyLink,
                         image_link: body.imageLink,
                         priority_weight: parseInt(body.priorityWeight, 10),
                     },
@@ -169,6 +175,7 @@ export async function PUT(req, res) {
                         stock: parseInt(body.stock, 10),
                         buy_price: parseFloat(body.buyPrice),
                         sell_price: parseFloat(body.sellPrice),
+                        buy_link: body.buyLink,
                         image_link: body.imageLink,
                         priority_weight: parseInt(body.priorityWeight, 10),
                     },

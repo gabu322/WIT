@@ -10,10 +10,16 @@ export async function GET(req, res) {
         if (searchParams.get('name')) {
             whereClause.name = searchParams.get('name');
         }
+
         // Get products based on where clause
         const products = await prisma.product.findMany({
             where: whereClause
         });
+
+        // If no products are found, return a 404 response
+        if (!products) {
+            return new Response(JSON.stringify("Nenhum produto encontrado"), { status: 404 });
+        }
 
         // Map products to a frontend friendly format
         const formatedProducts = products.map(product => {
@@ -29,7 +35,6 @@ export async function GET(req, res) {
         // Return the formated products
         return new Response(JSON.stringify(formatedProducts), { status: 200 });
     } catch (error) {
-        console.log(error);
         return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
 }
