@@ -29,9 +29,10 @@ export async function GET(req, res) {
             return {
                 id: image.id,
                 productId: image.product_id,
-                imageLink: image.image_link,
+                link: image.link,
             }
         });
+        console.log(productImages);
 
         return new Response(JSON.stringify(productImages), { status: 200 });
     } catch (error) {

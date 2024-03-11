@@ -2,8 +2,13 @@ import { prisma } from "@app/api/client";
 
 export async function GET(req, res) {
     try {
-        // Get products
-        const products = await prisma.product.findMany({});
+        // Get products with their variations and images
+        const products = await prisma.product.findMany({
+            include: {
+                product_variation: true,
+                product_image: true,
+            },
+        });
 
         // Map products to a frontend friendly format
         const formatedProducts = products.map(product => {
@@ -13,8 +18,27 @@ export async function GET(req, res) {
                 description: product.description,
                 shopeeId: product.shopee_id,
                 targetedStock: product.targeted_stock,
+                productVariations: product.product_variation.map(variation => {
+                    return {
+                        id: variation.id,
+                        name: variation.name,
+                        stock: variation.stock,
+                        buyPrice: variation.buy_price,
+                        sellPrice: variation.sell_price,
+                        imageLink: variation.image_link,
+                        buyLink: variation.buy_link,
+                        priorityWeight: variation.priority_weight,
+                    };
+                }),
+                productImages: product.product_image.map(image => {
+                    return {
+                        id: image.id,
+                        link: image.link,
+                    };
+                }),
             }
         });
+        
         // Return the formated products
         return new Response(JSON.stringify(formatedProducts), { status: 200 });
     } catch (error) {
