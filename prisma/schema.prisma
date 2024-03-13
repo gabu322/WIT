@@ -4,63 +4,52 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = "postgresql://postgres:postgres@localhost:5432/workshop_of_iot?schema=public"
+    provider     = "postgresql"
+    url          = env("DATABASE_URL")
 }
 
-// Define your data models
 model order {
-    id   Int      @id @default(autoincrement()) // Unique identifier for orders
-    date DateTime @default(now()) // Date and time of the order
-
-    // Define relationships
+    id          Int          @id @default(autoincrement())
+    date        DateTime     @default(now())
     order_items order_item[]
 }
 
 model product {
-    id             Int     @id @default(autoincrement()) // Unique identifier for products
-    name           String  @db.VarChar(255) // Name of the product
-    description    String? // Description of the product
-    shopee_id      String? // Shopee ID for the product
-    targeted_stock Int // Targeted stock level for the product
-
-    // Define relationships
-    product_image     product_image[] // Images associated with the product
-    product_variation product_variation[] // Variations of the product
+    id                Int                 @id @default(autoincrement())
+    name              String              @db.VarChar(255)
+    description       String?
+    shopee_id         String?
+    targeted_stock    Int
+    product_image     product_image[]
+    product_variation product_variation[]
 }
 
 model product_image {
-    id         Int    @id @default(autoincrement()) // Unique identifier for product images
-    product_id Int // ID of the associated product
-    link       String // Link to the image
-
-    // Define relationships
-    product product @relation(fields: [product_id], references: [id])
+    id         Int     @id @default(autoincrement())
+    product_id Int
+    link       String
+    product    product @relation(fields: [product_id], references: [id])
 }
 
 model product_variation {
-    id              Int     @id @default(autoincrement()) // Unique identifier for product variations
-    product_id      Int // ID of the associated product
-    name            String // Name of the variation
-    stock           Int // Stock level of the variation
-    buy_price       Float // Purchase price of the variation
-    sell_price      Float // Selling price of the variation
-    image_link      String? // Link to the image of the variation
-    buy_link        String? // Link for purchasing the product
-    priority_weight Float? // Priority weight for the variation
-
-    // Define relationships
-    product     product      @relation(fields: [product_id], references: [id])
-    order_items order_item[] // Order items associated with this variation
+    id              Int          @id @default(autoincrement())
+    product_id      Int
+    name            String
+    stock           Int
+    buy_price       Float
+    sell_price      Float
+    image_link      String?
+    buy_link        String?
+    priority_weight Float?
+    product         product      @relation(fields: [product_id], references: [id])
+    order_items     order_item[]
 }
 
 model order_item {
-    id                   Int @id @default(autoincrement()) // Unique identifier for order items
-    order_id             Int // ID of the associated order
-    product_variation_id Int // ID of the associated product variation
-    quantity             Int // Quantity of the product variation in the order
-
-    // Define relationships
-    product_variation product_variation @relation(fields: [product_variation_id], references: [id])
-    order             order              @relation(fields: [order_id], references: [id])
+    id                   Int               @id @default(autoincrement())
+    order_id             Int
+    product_variation_id Int
+    quantity             Int
+    product_variation    product_variation @relation(fields: [product_variation_id], references: [id])
+    order                order             @relation(fields: [order_id], references: [id])
 }

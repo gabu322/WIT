@@ -4,8 +4,9 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = "postgresql://postgres:postgres@localhost:5432/workshop_of_iot?schema=public"
+    provider     = "postgresql"
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
 }
 
 // Define your data models
@@ -62,5 +63,5 @@ model order_item {
 
     // Define relationships
     product_variation product_variation @relation(fields: [product_variation_id], references: [id])
-    order             order              @relation(fields: [order_id], references: [id])
+    order             order             @relation(fields: [order_id], references: [id])
 }
