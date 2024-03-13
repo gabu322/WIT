@@ -1,24 +1,21 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "order" (
+    "id" SERIAL NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-  - You are about to drop the `product_images` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `product_variations` table. If the table is not empty, all the data it contains will be lost.
+    CONSTRAINT "order_pkey" PRIMARY KEY ("id")
+);
 
-*/
--- DropForeignKey
-ALTER TABLE "order_item" DROP CONSTRAINT "order_item_product_variation_id_fkey";
+-- CreateTable
+CREATE TABLE "product" (
+    "id" SERIAL NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
+    "description" TEXT,
+    "shopee_id" TEXT,
+    "targeted_stock" INTEGER NOT NULL,
 
--- DropForeignKey
-ALTER TABLE "product_images" DROP CONSTRAINT "product_images_product_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "product_variations" DROP CONSTRAINT "product_variations_product_id_fkey";
-
--- DropTable
-DROP TABLE "product_images";
-
--- DropTable
-DROP TABLE "product_variations";
+    CONSTRAINT "product_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "product_image" (
@@ -44,6 +41,16 @@ CREATE TABLE "product_variation" (
     CONSTRAINT "product_variation_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "order_item" (
+    "id" SERIAL NOT NULL,
+    "order_id" INTEGER NOT NULL,
+    "product_variation_id" INTEGER NOT NULL,
+    "quantity" INTEGER NOT NULL,
+
+    CONSTRAINT "order_item_pkey" PRIMARY KEY ("id")
+);
+
 -- AddForeignKey
 ALTER TABLE "product_image" ADD CONSTRAINT "product_image_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -52,3 +59,6 @@ ALTER TABLE "product_variation" ADD CONSTRAINT "product_variation_product_id_fke
 
 -- AddForeignKey
 ALTER TABLE "order_item" ADD CONSTRAINT "order_item_product_variation_id_fkey" FOREIGN KEY ("product_variation_id") REFERENCES "product_variation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "order_item" ADD CONSTRAINT "order_item_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

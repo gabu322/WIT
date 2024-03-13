@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
     provider = "postgresql"
-    url      = "postgresql://postgres:postgres@localhost:5432/workshop_of_iot?schema=public"
+    url      = env("DATABASE_URL")
 }
 
 // Define your data models
