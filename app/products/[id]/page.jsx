@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 import Button from "@components/Button";
 import Input from "@components/Input";
@@ -49,7 +49,7 @@ export default ({ params }) => {
         // Fetch the product details and its images and variations
         const fetchData = async () => {
 
-            const fetchingToast = toast.loading('Buscando dados do produto...', { position: "top-right" })
+            const fetchingToast = toast.loading('Buscando dados do produto...')
 
             // await axios.get(`/api/products?id=${params?.id}`)
             await axios.get(`/api/products/${params?.id}`)

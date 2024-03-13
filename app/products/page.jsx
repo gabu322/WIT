@@ -1,7 +1,10 @@
 'use client';
 
-import axios from "axios";
 import { useEffect, useState } from "react";
+
+import axios from "axios";
+import { toast } from "react-toastify";
+
 import Input from '@components/Input';
 import Carrousel from "@components/Carrousel";
 import Button from "@components/Button";
@@ -12,10 +15,12 @@ function Products({ product }) {
         return image.link;
     }).filter((link) => link));
 
-    return <div className="shadow-xl rounded-lg overflow-hidden border border-gray-100 relative" style={{
-        backgroundColor: "white",
-        height: "400px"
-    }}>
+    return <div className="shadow-xl rounded-lg overflow-hidden border border-gray-100 relative"
+        style={{
+            backgroundColor: "white",
+            height: "400px"
+        }}
+    >
         <div className="w-full h-1/2">
             <Carrousel images={images}></Carrousel>
         </div>
@@ -48,9 +53,16 @@ export default function () {
     const [filter, setFilter] = useState();
 
     useEffect(() => {
+        const fetchingToast = toast.loading('Carregando produtos...');
+
         axios.get('/api/products').then((res) => {
             setProducts(res.data);
-        })
+            toast.update(fetchingToast, { render: "Informações encontradas", type: "success", isLoading: false, autoClose: 5000 });
+        }).catch((err) => {
+            toast.update(fetchingToast, { render: "Erro ao buscar informações", type: "error", isLoading: false, autoClose: 5000 });
+        });
+
+
     }, []);
 
     return <main className="main">
