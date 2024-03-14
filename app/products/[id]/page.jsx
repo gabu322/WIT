@@ -53,8 +53,9 @@ export default ({ params }) => {
 
             // await axios.get(`/api/products?id=${params?.id}`)
             await axios.get(`/api/products/${params?.id}`)
-                .then(res => setProduct(res.data))
-                .catch(error => {
+                .then(res => {
+                    setProduct(res.data)
+                }).catch(error => {
                     setAlert(error)
                     toast.update(fetchingToast, { render: "Produto não encontrado", type: "error", isLoading: false, autoClose: 5000 });
                     return Promise.reject('Product not found');
@@ -165,12 +166,10 @@ export default ({ params }) => {
         try {
             if (params?.id > 0) {
                 const updatingToast = toast.loading('Atualizando produto...');
-                console.log("Updating product")
-
                 await axios.put('/api/products', product);
-                console.log("Updating product variations")
+
                 await axios.put('/api/productVariations', productVariations);
-                console.log("Updating product images")
+
                 await axios.put('/api/productImages', productImages);
 
                 toast.update(updatingToast, { render: "Produto atualizado", type: "success", isLoading: false, autoClose: 5000 });
@@ -183,7 +182,7 @@ export default ({ params }) => {
                     throw new Error('Product already exists');
                 }
 
-                if(productVariations.length < 1){
+                if (productVariations.length < 1) {
                     setAlert('Adicione pelo menos uma variação');
                     throw new Error('No variations');
                 }
@@ -305,61 +304,64 @@ export default ({ params }) => {
                         {productVariations.length > 1 && <Button onClick={handleApplyToAll} text="Aplicar a todos" />}
                         <Button onClick={handleAddVariation} color="green">Adicionar variações</Button>
                     </div>
-                    {productVariations.map((variation, index) => (
-                        <div key={index} className={productVariations.length == 1 ? "flex-c-6" : "flex-r-6"}>
-                            {productVariations.length > 1 && <Input
-                                id={"variationName" + (index + 1)}
-                                name="name"
-                                label={"Nome da variação"}
-                                initialValue={variation.name}
-                                onChange={(e) => handleChangeVariation(e, index)}
-                                required
-                            />}
-                            <Input
-                                id={"stock" + (index + 1)}
-                                name="stock"
-                                label={"Estoque atual"}
-                                type="number"
-                                initialValue={variation.stock}
-                                onChange={(e) => handleChangeVariation(e, index)}
-                                required
-                            />
-                            <Input
-                                id={"buyLink" + (index + 1)}
-                                name="buyLink"
-                                label={"Link de compra"}
-                                initialValue={variation.buyLink}
-                                onChange={(e) => handleChangeVariation(e, index)}
-                                required
-                            />
-                            <Input
-                                id={"buyPrice" + (index + 1)}
-                                name="buyPrice"
-                                label={"Preço de compra (USD)"}
-                                type="currency"
-                                initialValue={variation.buyPrice}
-                                onChange={(e) => handleChangeVariation(e, index)}
-                                required
-                            />
-                            <Input
-                                id={"sellPrice" + (index + 1)}
-                                name="sellPrice"
-                                label={"Preço de venda (R$)"}
-                                type="currency"
-                                initialValue={variation.sellPrice}
-                                onChange={(e) => handleChangeVariation(e, index)}
-                                required
-                            />
-                            {productVariations.length > 1 &&
-                                <Button
-                                    onClick={() => handleRemoveVariation(index)}
-                                    color="red"
-                                    square
-                                    text="X"
+
+                    <div className="flex-c-6">
+                        {productVariations.map((variation, index) => (
+                            <div key={index} className={productVariations.length == 1 ? "flex-c-6" : "flex-r-6"}>
+                                {productVariations.length > 1 && <Input
+                                    id={"variationName" + (index + 1)}
+                                    name="name"
+                                    label={"Nome da variação"}
+                                    initialValue={variation.name}
+                                    onChange={(e) => handleChangeVariation(e, index)}
+                                    required
+                                />}
+                                <Input
+                                    id={"stock" + (index + 1)}
+                                    name="stock"
+                                    label={"Estoque atual"}
+                                    type="number"
+                                    initialValue={variation.stock}
+                                    onChange={(e) => handleChangeVariation(e, index)}
+                                    required
                                 />
-                            }
-                        </div>
-                    ))}
+                                <Input
+                                    id={"buyLink" + (index + 1)}
+                                    name="buyLink"
+                                    label={"Link de compra"}
+                                    initialValue={variation.buyLink}
+                                    onChange={(e) => handleChangeVariation(e, index)}
+                                    required
+                                />
+                                <Input
+                                    id={"buyPrice" + (index + 1)}
+                                    name="buyPrice"
+                                    label={"Preço de compra (USD)"}
+                                    type="currency"
+                                    initialValue={variation.buyPrice}
+                                    onChange={(e) => handleChangeVariation(e, index)}
+                                    required
+                                />
+                                <Input
+                                    id={"sellPrice" + (index + 1)}
+                                    name="sellPrice"
+                                    label={"Preço de venda (R$)"}
+                                    type="currency"
+                                    initialValue={variation.sellPrice}
+                                    onChange={(e) => handleChangeVariation(e, index)}
+                                    required
+                                />
+                                {productVariations.length > 1 &&
+                                    <Button
+                                        onClick={() => handleRemoveVariation(index)}
+                                        color="red"
+                                        square
+                                        text="X"
+                                    />
+                                }
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Dev Buttons to debug */}

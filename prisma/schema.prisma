@@ -20,6 +20,7 @@ model product {
     description       String?
     shopee_id         String?
     targeted_stock    Int
+
     product_image     product_image[]
     product_variation product_variation[]
 }
@@ -28,6 +29,7 @@ model product_image {
     id         Int     @id @default(autoincrement())
     product_id Int
     link       String
+
     product    product @relation(fields: [product_id], references: [id])
 }
 
@@ -41,8 +43,9 @@ model product_variation {
     image_link      String?
     buy_link        String?
     priority_weight Float?
-    product         product      @relation(fields: [product_id], references: [id])
+
     order_items     order_item[]
+    product         product      @relation(fields: [product_id], references: [id])
 }
 
 model order_item {
@@ -50,6 +53,7 @@ model order_item {
     order_id             Int
     product_variation_id Int
     quantity             Int
-    product_variation    product_variation @relation(fields: [product_variation_id], references: [id])
+
     order                order             @relation(fields: [order_id], references: [id])
+    product_variation    product_variation @relation(fields: [product_variation_id], references: [id])
 }

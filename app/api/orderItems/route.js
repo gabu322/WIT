@@ -24,7 +24,6 @@ export async function POST(req, res) {
             status: 200
         });
     } catch (error) {
-        console.log(error);
         return new Response(JSON.stringify("Erro na requisição"), {
             status: 405
         });

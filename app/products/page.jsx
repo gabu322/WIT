@@ -15,19 +15,18 @@ function Products({ product }) {
         return image.link;
     }).filter((link) => link));
 
-    return <div className="shadow-xl rounded-lg overflow-hidden border border-gray-100 relative"
+    return <div className="shadow-xl rounded-lg overflow-hidden relative bg-white"
         style={{
-            backgroundColor: "white",
             height: "400px"
         }}
     >
-        <div className="w-full h-1/2">
+        <div className="w-full h-2/5">
             <Carrousel images={images}></Carrousel>
         </div>
-        <div className="w-full h-1/2 flex flex-col justify-between gap-4 p-4">
+        <div className="w-full h-3/5 flex flex-col justify-between gap-4 p-4">
             <h3 className="font-bold truncate">{product.name}</h3>
 
-            <div className="overflow-y-scroll grow">
+            <div className="overflow-auto grow flex flex-col gap-1">
                 {product.productVariations.map((variation) => {
                     return <div key={variation.id} className="flex flex-row justify-between w-full">
                         <div className="truncate">{variation.name}</div>
@@ -65,11 +64,12 @@ export default function () {
 
     }, []);
 
-    return <main className="main">
-        <h1 className="bold">Produtos</h1>
+    return <main className="main flex-c-8">
+        <h1 className="text-4xl font-bold w-full">Produtos</h1>
         <div className='w-full'>
-            <Input options={products?.map((product) => product)}
+            <Input
                 id="filter"
+                options={products?.map((product) => product)}
                 isSearchable
                 onChange={(e) => setFilter(e.target.value)}
                 label="Pesquisar produto"
@@ -81,6 +81,5 @@ export default function () {
             )}
 
         </div>
-    </main>
-        ;
+    </main>;
 };

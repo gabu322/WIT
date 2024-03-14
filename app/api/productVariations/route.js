@@ -103,7 +103,6 @@ export async function PUT(req, res) {
             const updatedVariations = await Promise.all(body.map(async (variation) => {
                 // Check if the variation has an id
                 if (!variation.id) {
-                    console.log(variation)
                     // If it doesn't, create a new variation
                     try {
                         const createdVariation = await prisma.product_variation.create({
