@@ -18,7 +18,7 @@ export async function GET(req, res) {
                 description: product.description,
                 shopeeId: product.shopee_id,
                 targetedStock: product.targeted_stock,
-                productVariations: product.product_variation.map(variation => {
+                variations: product.product_variation.map(variation => {
                     return {
                         id: variation.id,
                         name: variation.name,
@@ -30,7 +30,7 @@ export async function GET(req, res) {
                         priorityWeight: variation.priority_weight,
                     };
                 }),
-                productImages: product.product_image.map(image => {
+                images: product.product_image.map(image => {
                     return {
                         id: image.id,
                         link: image.link,
@@ -38,7 +38,7 @@ export async function GET(req, res) {
                 }),
             }
         });
-        
+
         // Return the formated products
         return new Response(JSON.stringify(formatedProducts), { status: 200 });
     } catch (error) {

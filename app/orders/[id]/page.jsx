@@ -1,20 +1,96 @@
 'use client';
 
-import Main from "@components/Main";
 import { useState, useEffect } from "react";
 import Input from '@components/Input';
 import axios from "axios";
 import Button from "@components/Button";
-import Product from "./Product";
 
-export default function ({ params }) {
+function Product({ product, index, order, setOrder }) {
+    const handleAddVariation = () => {
+        let newOrder = [...order];
+        newOrder[index].variations.push({
+            variationId: 0,
+            quantity: 0,
+        });
+        setOrder(newOrder);
+    }
+
+    const handleUpdateVariation = (vIndex, e) => {
+        let newOrder = [...order];
+        newOrder[index].variations[vIndex][e.target.name] = +e.target.value;
+        setOrder(newOrder);
+    }
+
+    return <div className="w-full shadow-lg rounded-lg overflow-hidden p-6 flex-r-4">
+        {/* <div className="w-1/4">
+            {product.images.length > 0 && (
+                <img
+                    src={product.images[0].link}
+                    alt={product.name + "_image"}
+                    className="w-full"
+                />
+            )}
+        </div> */}
+        <div className="w-full flex-c-6">
+            <div className="flex-r-6">
+                <h2 className="text-2xl font-bold text-pretty">{product.name}</h2>
+
+            </div>
+            {order[index].variations.length > 0 && <div className="flex-c-4">
+                {order[index].variations.map((variation, variationIndex) => (
+                    <div key={variation.id} className="flex-r-4">
+                        <Input
+                            id={`variation-${index}-${variationIndex}`}
+                            required
+                            name="variationId"
+                            options={product.variations}
+                            onChange={(e) => handleUpdateVariation(variationIndex, e)}
+                            label={"Variação"}
+                        />
+                        <Input
+                            id={`quantity-${index}-${variationIndex}`}
+                            type="number"
+                            name="quantity"
+                            required
+                            disabled={variation.variationId == 0 || product.variations.find((v) => variation.variationId)?.stock == 0}
+                            label={`Quantidade (max: ${product.variations.find((v) => v.id == variation.variationId)?.stock || 0})`}
+                            onChange={(e) => handleUpdateVariation(variationIndex, e)}
+                        />
+                        <Button
+                            onClick={() => {
+                                let updatedOrder = [...order];
+                                updatedOrder[index].variations.splice(variationIndex, 1);
+                                setOrder(updatedOrder);
+                            }}
+                            text="X"
+                            square
+                            color="red"
+                        />
+                    </div>
+                ))}
+            </div>}
+            {/* Button to add a variation */}
+            <div className="w-full flex flex-row-reverse">
+                <Button
+                    onClick={() => { handleAddVariation() }}
+                    text="Adicionar Variação +"
+                    disabled={product.variations.length == order[index].variations.length}
+                />
+            </div>
+        </div>
+    </div>;
+}
+export default function Page({ params }) {
     const [products, setProducts] = useState([]);
     const [optionId, setOptionId] = useState();
-    const [orderItems, setOrderItems] = useState([]); // [productId, [variationId, quantity]]
+    const [order, setOrder] = useState([]); // [productId, [variationId, quantity]]
     const [filter, setFilter] = useState();
     const [date, setDate] = useState();
+    const [debugMode, setDebugMode] = useState(false);
 
     useEffect(() => {
+        setDebugMode(location.search.includes('debug'));
+
         axios.get('/api/products').then((res) => {
             setProducts(res.data);
         });
@@ -22,27 +98,37 @@ export default function ({ params }) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        try {
+            if(params?.id > 0) {
+                console.log('Order already exists');
+
+            } else {
+
+            }
+        } catch (error) {
+            console.error(error);
+        }
         const response = await axios.post('/api/orders', {
             date: date,
         });
-        const items = orderItems.flatMap((item) => {
+        const items = order.flatMap((item) => {
             return item.variations.map((variation) => {
                 return {
                     orderId: response.data.id,
-                    // orderId: response.data.orderId,
                     variationId: variation.variationId,
                     quantity: +variation.quantity,
                 };
             });
         });
-        
-        axios.post('/api/orderItems', items);
+
+        axios.post('/api/order', items);
     };
 
-    return <Main>
-        <form className="flex-c-4 w-full" onSubmit={handleSubmit}>
-            <div className="flex-r-4 w-full">
-                <div className="flex-c-4 w-full">
+    return <main className="main ">
+        <form className="flex-c-8 w-full" onSubmit={handleSubmit}>
+            <div className="flex-r-6 w-full">
+                <div className="flex-c-6 w-full">
                     <div className="flex justify-between">
                         <h1 className='text-3xl font-bold'>Pedidos</h1>
 
@@ -69,7 +155,7 @@ export default function ({ params }) {
                         getOptionInfo={(id) => setOptionId(id)}
                     />
                 </div>
-                <div className="flex-c-4">
+                <div className="flex-c-6">
                     <Button id="submit"
                         color={"green"}
                         width={"100%"}
@@ -82,7 +168,7 @@ export default function ({ params }) {
                             setOptionId(null);
                             if (optionId == null) return;
 
-                            setOrderItems([...orderItems, {
+                            setOrder([...order, {
                                 productId: optionId.id,
                                 variations: []
                             }]);
@@ -93,23 +179,33 @@ export default function ({ params }) {
                 </div>
             </div>
 
-            <div className='w-full flex-c-4'>
-                <h2 className='text-2xl'>Produtos:</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 w-full">
-                    {orderItems.map((product, index) => (
-                        <Product
-                            key={index}
-                            product={product}
-                            index={index}
-                            orderItems={orderItems}
-                            setOrderItems={setOrderItems}
-                            products={products}
-                            setProducts={setProducts}
-                        />
-                    ))}
-                </div>
-            </div>
+            {order.length > 0 && <div className='w-full flex-c-8'>
+                {order.map((product, index) => (
+                    <Product
+                        key={product.productId}
+                        product={products.find((p) => p.id == product.productId)}
+                        index={index}
+                        order={order}
+                        setOrder={setOrder}
+                    />
+                ))}
+            </div>}
+            {/* Debug buttons */}
+            {debugMode && <div className="flex-r-8">
+                <Button
+                    onClick={() => {
+                        console.log(order);
+                    }}
+                    text="Log Order"
+                />
+                <Button
+                    onClick={() => {
+                        console.log(products);
+                    }}
+                    text="Log Products"
+                />
+            </div>}
         </form>
-    </Main>
+    </main>
 
 }

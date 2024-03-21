@@ -9,13 +9,13 @@ import Input from '@components/Input';
 import Carrousel from "@components/Carrousel";
 import Button from "@components/Button";
 
-function Products({ product }) {
+function Product({ product }) {
 
-    const images = (product.productImages?.map((image) => {
+    const images = (product.images?.map((image) => {
         return image.link;
     }).filter((link) => link));
 
-    return <div className="shadow-xl rounded-lg overflow-hidden relative bg-white"
+    return <div className="shadow-lg rounded-lg overflow-hidden relative bg-white"
         style={{
             height: "400px"
         }}
@@ -27,7 +27,7 @@ function Products({ product }) {
             <h3 className="font-bold truncate">{product.name}</h3>
 
             <div className="overflow-auto grow flex flex-col gap-1">
-                {product.productVariations.map((variation) => {
+                {product.variations.map((variation) => {
                     return <div key={variation.id} className="flex flex-row justify-between w-full">
                         <div className="truncate">{variation.name}</div>
                         <div>{variation.stock}/{product.targetedStock}</div>
@@ -46,7 +46,7 @@ function Products({ product }) {
     </div>
 };
 
-export default function () {
+export default function Page() {
     const [products, setProducts] = useState([]);
 
     const [filter, setFilter] = useState();
@@ -75,9 +75,9 @@ export default function () {
                 label="Pesquisar produto"
             />
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 gap-4 w-full">
             {products.filter(product => !filter || product.name.toLowerCase().includes(filter.toLowerCase())).map((product) =>
-                <Products key={product.id} product={product} />
+                <Product key={product.id} product={product} />
             )}
 
         </div>

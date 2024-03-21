@@ -39,12 +39,12 @@ export default ({ params }) => {
 
     const [newImageLink, setNewImageLink] = useState('');
 
-    const [devMode, setDevMode] = useState(false);
+    const [debugMode, setDebugMode] = useState(false);
 
     const [alert, setAlert] = useState();
 
     useEffect(() => {
-        setDevMode(location.search.includes('dev'));
+        setDebugMode(location.search.includes('debug'));
 
         // Fetch the product details and its images and variations
         const fetchData = async () => {
@@ -175,7 +175,7 @@ export default ({ params }) => {
                 toast.update(updatingToast, { render: "Produto atualizado", type: "success", isLoading: false, autoClose: 5000 });
             } else {
                 //check if exists a product with the same name
-                const existingProduct = await axios.get(`/api/products?name=${product.name}`);
+                const existingProduct = await axios.get(`/api/products/search?name=${product.name}`);
 
                 if (existingProduct.data.length > 0) {
                     setAlert('Produto já existe');
@@ -364,7 +364,7 @@ export default ({ params }) => {
                     </div>
                 </div>
 
-                {/* Dev Buttons to debug */}
+                {/* Debug buttonsebug */}
                 <div className="w-full flex flex-row-reverse gap-6">
                     <Button
                         type="submit"
@@ -374,7 +374,7 @@ export default ({ params }) => {
                             : "Criar produto"
                         }
                     />
-                    {devMode && <>
+                    {debugMode && <>
                         <Button
                             onClick={() => { console.log(product); }}
                             color="yellow"

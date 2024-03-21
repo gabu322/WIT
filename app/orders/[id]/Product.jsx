@@ -8,16 +8,16 @@ import Carrousel from "@components/Carrousel";
 export default function ProductItem({
     product,
     index,
-    orderItems,
-    setOrderItems,
+    Order,
+    setOrder,
     products,
     setProducts
 }) {
-    const productInfo = products.find((p) => p.id === orderItems[index].productId);
-    // const stock = productInfo?.productVariations?.find((v) => v.id == orderItems[index].variations[vIndex].variationId)?.stock;
+    const productInfo = products.find((p) => p.id === Order[index].productId);
+    // const stock = productInfo?.productVariations?.find((v) => v.id == Order[index].variations[vIndex].variationId)?.stock;
 
 
-    return <div className="shadow-xl rounded-lg overflow-hidden border border-gray-100 relative min-h-max" key={orderItems[index].productId} >
+    return <div className="shadow-xl rounded-lg overflow-hidden border border-gray-100 relative min-h-max" key={Order[index].productId} >
         {/* <div className="w-full h-0/2">
 
             <Carrousel images={productInfo.productImages.map((image) => image.link)}></Carrousel>
@@ -29,7 +29,7 @@ export default function ProductItem({
 
 
             <div className='flex-c-4'>
-                {orderItems[index].variations.map((variation, vIndex) => {
+                {Order[index].variations.map((variation, vIndex) => {
                     const stock = productInfo?.productVariations?.find((v) => v.id == variation.variationId)?.stock || 0;
                     return <div key={vIndex} className="flex-r-4">
                         <Input id={`filter-${product.productId}-${vIndex}`}
@@ -42,18 +42,18 @@ export default function ProductItem({
                             })}
                             size="sm"
                             onChange={(e) => {
-                                let newOrderItems = [...orderItems];
-                                if (newOrderItems[index].variations[vIndex].variationId != 0) {
-                                    const oldVariation = productInfo.productVariations.find((v) => v.id == newOrderItems[index].variations[vIndex].variationId);
+                                let newOrder = [...Order];
+                                if (newOrder[index].variations[vIndex].variationId != 0) {
+                                    const oldVariation = productInfo.productVariations.find((v) => v.id == newOrder[index].variations[vIndex].variationId);
                                     oldVariation.disabled = false;
                                 }
 
                                 const variation = productInfo.productVariations.find((v) => v.id == e.target.value);
                                 variation.disabled = true;
 
-                                newOrderItems[index].variations[vIndex].variationId = (+e.target.value); //+ is to transform into INT
+                                newOrder[index].variations[vIndex].variationId = (+e.target.value); //+ is to transform into INT
 
-                                setOrderItems(newOrderItems);
+                                setOrder(newOrder);
                             }}
                         />
                         <Input type='number'
@@ -62,22 +62,22 @@ export default function ProductItem({
                             size="sm"
                             label={'Qtd (/' + (stock) + ')'}
                             onChange={(e) => {
-                                let neworderItems = [...orderItems];
-                                neworderItems[index].variations[vIndex].quantity = e.target.value;
-                                setOrderItems(neworderItems);
+                                let newOrder = [...Order];
+                                newOrder[index].variations[vIndex].quantity = e.target.value;
+                                setOrder(newOrder);
                             }}
                         />
 
                         <Button
                             onClick={() => {
-                                let newOrderItems = [...orderItems];
+                                let newOrder = [...Order];
 
-                                const oldVariation = productInfo.productVariations.find((v) => v.id == newOrderItems[index].variations[vIndex].variationId);
+                                const oldVariation = productInfo.productVariations.find((v) => v.id == newOrder[index].variations[vIndex].variationId);
                                 if (oldVariation)
                                     oldVariation.disabled = false;
 
-                                newOrderItems[index].variations.splice(vIndex, 1);
-                                setOrderItems(newOrderItems);
+                                newOrder[index].variations.splice(vIndex, 1);
+                                setOrder(newOrder);
                             }}
                             color={"red"}
                             text={"x"}
@@ -91,23 +91,23 @@ export default function ProductItem({
                 <Button className={"w-full"}
                 width={"100%"}
                     onClick={() => {
-                        let newOrderItems = [...orderItems];
+                        let newOrder = [...Order];
 
-                        if (newOrderItems[index].variations.length < productInfo.productVariations.length) {
-                            newOrderItems[index].variations.push({
+                        if (newOrder[index].variations.length < productInfo.productVariations.length) {
+                            newOrder[index].variations.push({
                                 variationId: 0,
                                 quantity: 0,
                             });
                         }
 
-                        setOrderItems(newOrderItems);
+                        setOrder(newOrder);
                     }}
                     text="Add variação"
                 />
                 <Button
                     onClick={() => {
-                        setOrderItems((prevorderItems) => {
-                            return prevorderItems.filter((_, i) => i !== index);
+                        setOrder((prevOrder) => {
+                            return prevOrder.filter((_, i) => i !== index);
                         });
                         const enableProduct = products.find((p) => p.id == product.productId);
                         enableProduct.disabled = false;

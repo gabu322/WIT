@@ -5,7 +5,7 @@ export async function POST(req, res) {
         const body = await req.json();
 
         const createdItems = await Promise.all(body.map(async (item) => {
-            const createdItem = await prisma.orderItems.create({
+            const createdItem = await prisma.order_item.create({
                 data: {
                     "Orders": {
                         connect: { id: parseInt(item.orderId, 10) }
@@ -20,9 +20,7 @@ export async function POST(req, res) {
             return createdItem;
         }));
 
-        return new Response(JSON.stringify(createdItem), {
-            status: 200
-        });
+        return new Response(JSON.stringify(createdItems), {status: 200});
     } catch (error) {
         return new Response(JSON.stringify("Erro na requisição"), {
             status: 405

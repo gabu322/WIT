@@ -14,7 +14,8 @@ export default function Button({
     blank,
     textColor,
     text,
-    icon
+    icon,
+    disabled
 }) {
 
 
@@ -67,6 +68,7 @@ export default function Button({
             flex: "0 0 auto"
         }}
         onClick={onClick}
+        disabled={disabled}
     >
         {icon
             ? (<div className='h-4/5 w-4/5'>
