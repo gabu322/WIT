@@ -3,44 +3,21 @@ import { prisma } from "@app/api/client";
 export async function GET(req, res) {
     try {
         // Get products with their variations and images
-        const products = await prisma.product.findMany({
-            include: {
-                product_variation: true,
-                product_image: true,
-            },
-        });
+        const products = await prisma.product.findMany({});
 
         // Map products to a frontend friendly format
-        const formatedProducts = products.map(product => {
+        const formattedProducts = products.map(product => {
             return {
                 id: product.id,
                 name: product.name,
                 description: product.description,
                 shopeeId: product.shopee_id,
                 targetedStock: product.targeted_stock,
-                variations: product.product_variation.map(variation => {
-                    return {
-                        id: variation.id,
-                        name: variation.name,
-                        stock: variation.stock,
-                        buyPrice: variation.buy_price,
-                        sellPrice: variation.sell_price,
-                        imageLink: variation.image_link,
-                        buyLink: variation.buy_link,
-                        priorityWeight: variation.priority_weight,
-                    };
-                }),
-                images: product.product_image.map(image => {
-                    return {
-                        id: image.id,
-                        link: image.link,
-                    };
-                }),
             }
         });
 
         // Return the formated products
-        return new Response(JSON.stringify(formatedProducts), { status: 200 });
+        return new Response(JSON.stringify(formattedProducts), { status: 200 });
     } catch (error) {
         return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
@@ -48,64 +25,80 @@ export async function GET(req, res) {
 
 export async function POST(req, res) {
     try {
-        // Get body from request
-        const body = await req.json();
+        // Get data from request
+        const requestData = await req.json();
+
+        let products;
+        // Check if the data is a array
+        if (!Array.isArray(requestData)) {
+            // If the data is not an array, transform it into an array
+            products = [requestData];
+        };
 
         // Create a new product
-        const product = await prisma.product.create({
-            data: {
-                name: body.name,
-                description: body.description,
-                shopee_id: body.shopeeId,
-                targeted_stock: parseInt(body.targetedStock, 10),
-            },
-        });
+        const newProducts = await prisma.$transaction(
+            Promise.all(products.map(product =>
+                prisma.product.create({
+                    data: {
+                        name: product.name,
+                        description: product.description,
+                        shopee_id: product.shopeeId,
+                        targeted_stock: parseInt(product.targetedStock, 10),
+                    },
+                })
+            ))
+        );
 
         // Return the new product
-        return new Response(JSON.stringify(product), { status: 200 })
+        return new Response(JSON.stringify(newProducts), { status: 200 });
     } catch (error) {
-        return new Response(JSON.stringify("Erro na requisição"), { status: 405 })
+        return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
 };
 
 
 export async function PUT(req, res) {
     try {
-        // Get body from request
-        const body = await req.json();
+        // Get data from request
+        const requestData = await req.json();
 
-        // Check if the product exists
-        if(!body.id) {
-            // If the product doesn't exist, create it
-            const newProduct = await prisma.product.create({
-                data: {
-                    name: body.name,
-                    description: body.description,
-                    shopee_id: body.shopeeId,
-                    targeted_stock: body.targetedStock,
-                },
-            });
+        let products;
+        // Check if the data is a array
+        if (!Array.isArray(requestData)) {
+            // If the data is not an array, transform it into an array
+            products = [requestData];
+        };
 
-            // Return the new product
-            return new Response(JSON.stringify(newProduct), { status: 200 });
-        } else {
-            // If the product exists, update it
-            const updatedProduct = await prisma.product.update({
-                where: {
-                    id: parseInt(body.id, 10),
-                },
-                data: {
-                    name: body.name,
-                    description: body.description,
-                    shopee_id: body.shopeeId,
-                    targeted_stock: parseInt(body.targetedStock),
-                },
-            });
+        // Update products, or create new ones if they don't exist
+        const updatedProducts = await prisma.$transaction(
+            Promise.all(products.map(product =>
+                prisma.product.upsert({
+                    where: {
+                        id: product.id
+                    },
+                    update: {
+                        name: product.name,
+                        description: product.description,
+                        shopee_id: product.shopeeId,
+                        targeted_stock: parseInt(product.targetedStock, 10),
+                    },
+                    create: {
+                        name: product.name,
+                        description: product.description,
+                        shopee_id: product.shopeeId,
+                        targeted_stock: parseInt(product.targetedStock, 10),
+                    },
+                })
+            ))
+        );
 
-            // Return the updated product
-            return new Response(JSON.stringify(updatedProduct), { status: 200 });
-        }
+        // Return the updated products
+        return new Response(JSON.stringify(updatedProducts), { status: 200 });
     } catch (error) {
-        return new Response(JSON.stringify("Erro na requisição"), { status: 405 });
+        return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
 };
+
+export async function DELETE(req, res) {
+    return new Response(JSON.stringify("Safety: Can't delete all products"), { status: 405 });
+}
