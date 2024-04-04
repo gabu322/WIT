@@ -52,16 +52,62 @@ export default function Page() {
     const [filter, setFilter] = useState();
 
     useEffect(() => {
-        const fetchingToast = toast.loading('Carregando produtos...');
 
-        axios.get('/api/products').then((res) => {
-            setProducts(res.data);
-            toast.update(fetchingToast, { render: "Informações encontradas", type: "success", isLoading: false, autoClose: 5000 });
-        }).catch((err) => {
-            toast.update(fetchingToast, { render: "Erro ao buscar informações", type: "error", isLoading: false, autoClose: 5000 });
-        });
+        const fetchingData = async () => {
+            try {
+                const fetchingToast = toast.loading('Carregando produtos...');
 
+                let productsInfo = await axios.get('/api/products').then((res) => {
+                    return res.data;
+                }).catch((error) => {
+                    toast.update(fetchingToast, {
+                        render: "Erro ao buscar informações".message,
+                        type: "error",
+                        isLoading: false,
+                        autoClose: true
+                    });
+                });
 
+                let imagesInfo = await axios.get('/api/productImages').then((res) => {
+                    return res.data;
+                }).catch((error) => {
+                    toast.update(fetchingToast, {
+                        render: "Erro ao buscar imagens".message,
+                        type: "error",
+                        isLoading: false,
+                        autoClose: true
+                    });
+                });
+
+                let variationsInfo = await axios.get('/api/productVariations').then((res) => {
+                    return res.data;
+                }).catch((error) => {
+                    toast.update(fetchingToast, {
+                        render: "Erro ao buscar variações".message,
+                        type: "error",
+                        isLoading: false,
+                        autoClose: true
+                    });
+                });
+
+                setProducts(productsInfo.map((product) => {
+                    product.images = imagesInfo.filter((image) => image.productId === product.id);
+                    product.variations = variationsInfo.filter((variation) => variation.productId === product.id);
+                    return product;
+                }));
+
+                toast.update(fetchingToast, {
+                    render: "Produtos carregados com sucesso!",
+                    type: "success",
+                    isLoading: false,
+                    autoClose: true
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchingData();
     }, []);
 
     return <main className="main flex-c-8">

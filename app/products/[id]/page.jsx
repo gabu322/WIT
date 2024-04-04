@@ -52,22 +52,55 @@ export default ({ params }) => {
             const fetchingToast = toast.loading('Buscando dados do produto...')
 
             // await axios.get(`/api/products?id=${params?.id}`)
-            await axios.get(`/api/products/${params?.id}`)
-                .then(res => {
-                    setProduct(res.data)
-                }).catch(error => {
-                    setAlert(error)
-                    toast.update(fetchingToast, { render: "Produto não encontrado", type: "error", isLoading: false, autoClose: 5000 });
-                    return Promise.reject('Product not found');
+            await axios.get(`/api/products/${params?.id}`).then(res => {
+                toast.update(fetchingToast, {
+                    render: "Produto encontrado, buscando dados das variações...",
                 });
+                setProduct(res.data)
+            }).catch(error => {
+                setAlert(error)
+                toast.update(fetchingToast, {
+                    render: "Produto não encontrado",
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 3000
+                });
+                return Promise.reject('Product not found');
+            });
 
-            await axios.get(`/api/productVariations/search?productId=${params?.id}`)
-                .then(res => setProductVariations(res.data))
+            await axios.get(`/api/productVariations/search?productId=${params?.id}`).then(res => {
+                toast.update(fetchingToast, {
+                    render: "Variações encontradas, buscando imagens...",
+                });
+                setProductVariations(res.data);
+            }).catch(error => {
+                setAlert(error)
+                toast.update(fetchingToast, {
+                    render: "Variações não encontradas",
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 3000
+                });
+                return Promise.reject('Variations not found');
+            });
 
-            await axios.get(`/api/productImages/search?productId=${params?.id}`)
-                .then(res => setProductImages(res.data))
+            await axios.get(`/api/productImages/search?productId=${params?.id}`).then(res => {
+                toast.update(fetchingToast, {
+                    render: "Imagens encontradas",
+                });
+                setProductImages(res.data)
+            }).catch(error => {
+                setAlert(error)
+                toast.update(fetchingToast, {
+                    render: "Imagens não encontradas",
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 3000
+                });
+                return Promise.reject('Images not found');
+            });
 
-            toast.update(fetchingToast, { render: "Informações encontradas", type: "success", isLoading: false, autoClose: 5000 });
+            toast.update(fetchingToast, { render: "Informações encontradas", type: "success", isLoading: false, autoClose: 3000 });
         };
 
         // If is the id of a existing product, fetch the product details
@@ -172,7 +205,7 @@ export default ({ params }) => {
 
                 await axios.put('/api/productImages', productImages);
 
-                toast.update(updatingToast, { render: "Produto atualizado", type: "success", isLoading: false, autoClose: 5000 });
+                toast.update(updatingToast, { render: "Produto atualizado", type: "success", isLoading: false, autoClose: 3000 });
             } else {
                 //check if exists a product with the same name
                 const existingProduct = await axios.get(`/api/products/search?name=${product.name}`);
