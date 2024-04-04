@@ -16,7 +16,7 @@ export async function GET(req, res) {
             }
         });
 
-        // Return the formated products
+        // Return the formatted products
         return new Response(JSON.stringify(formattedProducts), { status: 200 });
     } catch (error) {
         return new Response(JSON.stringify("Error in request"), { status: 500 });
@@ -35,7 +35,7 @@ export async function POST(req, res) {
 
         // Create new products
         const newProducts = await prisma.$transaction(
-            products.map(product =>
+            Promisse.all(products.map(product =>
                 prisma.product.create({
                     data: {
                         name: product.name,
@@ -44,7 +44,7 @@ export async function POST(req, res) {
                         targeted_stock: parseInt(product.targetedStock, 10),
                     },
                 })
-            )
+            ))
         );
 
         // Return the new product(s), ensuring the response is the same format as the request
@@ -52,11 +52,11 @@ export async function POST(req, res) {
             ? newProducts
             : newProducts[0]
         ), { status: 200 });
+
     } catch (error) {
         return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
 };
-
 
 export async function PUT(req, res) {
     try {
@@ -96,11 +96,12 @@ export async function PUT(req, res) {
             ? updatedProducts
             : updatedProducts[0]
         ), { status: 200 });
+
     } catch (error) {
         return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
 };
 
-export async function DELETE(req, res) {
+export async function DELETE() {
     return new Response(JSON.stringify("Safety: Can't delete all products"), { status: 405 });
-}
+};

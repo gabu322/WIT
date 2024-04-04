@@ -2,28 +2,22 @@ import { prisma } from "@app/api/client";
 
 export async function GET(req, res) {
     try {
-        const searchParams = req.nextUrl.searchParams;
-        // Set where clause
-        let whereClause = {};
-        if (searchParams.get('id')) {
-            whereClause.id = parseInt(searchParams.get('id'), 10);
-        }
-        if (searchParams.get('productId')) {
-            whereClause.product_id = parseInt(searchParams.get('productId'), 10);
-        }
+        // Get search params
+        const searchParams = req.nextUrl?.searchParams;
 
-        // Get productVariations based on where clause
-        let productVariations = await prisma.product_variation.findMany({
+        // Set where clause
+        let whereClause = {
+            product_id: parseInt(searchParams.get('productId'), 10) || undefined,
+            name: searchParams.get('name') || undefined,
+        };
+
+        // Get product variations
+        const productVariations = await prisma.product_variation.findMany({
             where: whereClause
         });
 
-        // If no productVariations are found, return a 404 response
-        if (!productVariations) {
-            return new Response(JSON.stringify("Nenhuma variação encontrada"), { status: 404 });
-        }
-
         // Map productVariations to a frontend friendly format
-        productVariations = productVariations.map(variation => {
+        const formattedVariations = productVariations.map(variation => {
             return {
                 id: variation.id,
                 productId: variation.product_id,
@@ -37,8 +31,39 @@ export async function GET(req, res) {
             }
         });
 
-        return new Response(JSON.stringify(productVariations), { status: 200 });
+        return new Response(JSON.stringify(formattedVariations), { status: 200 });
     } catch (error) {
-        return new Response(JSON.stringify("Request error in productVariations with GET"), { status: 500 });
+        return new Response(JSON.stringify("Error in request"), { status: 500 });
+    }
+}
+
+export async function POST(req, res) {
+    return new Response(JSON.stringify("Not implemented"), { status: 501 });
+}
+
+export async function PUT(req, res) {
+    return new Response(JSON.stringify("Not implemented"), { status: 501 });
+}
+
+export async function DELETE(req, res) {
+    return new Response(JSON.stringify("Not implemented"), { status: 501 });
+    try {
+        // Get search params
+        const searchParams = req.nextUrl?.searchParams;
+
+        // Set where clause
+        let whereClause = {
+            product_id: parseInt(searchParams.get('productId'), 10) || undefined,
+            name: searchParams.get('name') || undefined,
+        };
+
+        // Get product variations based on where clause
+        const deletedVariations = await prisma.product_variation.deleteMany({
+            where: whereClause
+        });
+
+        return new Response(JSON.stringify(deletedVariations), { status: 200 });
+    } catch (error) {
+        return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
 }

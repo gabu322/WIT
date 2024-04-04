@@ -17,7 +17,7 @@ export async function GET(req, res) {
         });
 
         // Map products to a frontend friendly format
-        const formatedProducts = products.map(product => {
+        const formattedProducts = products.map(product => {
             return {
                 id: product.id,
                 name: product.name,
@@ -27,22 +27,23 @@ export async function GET(req, res) {
             }
         });
 
-        // Return the formated products
-        return new Response(JSON.stringify(formatedProducts), { status: 200 });
+        // Return the formatted products
+        return new Response(JSON.stringify(formattedProducts), { status: 200 });
     } catch (error) {
         return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
-}
+};
 
 export async function POST(req, res) {
     return new Response(JSON.stringify("Not implemented"), { status: 501 });
-}
+};
 
 export async function PUT(req, res) {
     return new Response(JSON.stringify("Not implemented"), { status: 501 });
-}
+};
 
 export async function DELETE(req, res) {
+    return new Response(JSON.stringify("Not implemented"), { status: 501 });
     try {
         // Get search params
         const searchParams = req.nextUrl?.searchParams;
@@ -54,7 +55,7 @@ export async function DELETE(req, res) {
         };
 
         // Get products based on where clause
-        const deletedProducts = await prisma.product.findMany({
+        const deletedProducts = await prisma.product.deleteMany({
             where: whereClause
         });
 
@@ -63,4 +64,4 @@ export async function DELETE(req, res) {
     } catch (error) {
         return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
-}
+};

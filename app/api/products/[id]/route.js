@@ -18,7 +18,7 @@ export async function GET(req, res) {
         }
 
         // Transform product to a frontend friendly format
-        const formatedProduct = {
+        const formattedProduct = {
             id: product.id,
             name: product.name,
             description: product.description,
@@ -26,16 +26,16 @@ export async function GET(req, res) {
             targetedStock: product.targeted_stock,
         };
 
-        // Return the formated product
-        return new Response(JSON.stringify(formatedProduct), { status: 200 });
+        // Return the formatted product
+        return new Response(JSON.stringify(formattedProduct), { status: 200 });
     } catch (error) {
         return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
-}
+};
 
 export async function POST(req, res) {
     return new Response(JSON.stringify("Not implemented, can't post new product by id"), { status: 501 });
-}
+};
 
 export async function PUT(req, res) {
     try {
@@ -63,7 +63,7 @@ export async function PUT(req, res) {
     } catch (error) {
         return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
-}
+};
 
 export async function DELETE(req, res) {
     try {
@@ -82,4 +82,4 @@ export async function DELETE(req, res) {
     } catch (error) {
         return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
-}
+};
