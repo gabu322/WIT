@@ -6,6 +6,7 @@ import Nav from '@components/Nav'
 
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import Menu from '@components/Menu';
 const roboto = Roboto({
     weight: '400',
     subsets: ['latin'],
@@ -20,7 +21,8 @@ export default function RootLayout({ children }) {
     return <html lang="en">
         <link  rel="icon" href="https://deo.shopeemobile.com/shopee/shopee-seller-live-sg/mmf_portal_seller_root_dir/shopee/favicon.ico" />
         <body className={roboto.className}>
-            <Nav />
+            <Menu />
+            {/* <Nav /> */}
             {children}
             <ToastContainer autoClose={3000}/>
         </body>
