@@ -49,7 +49,8 @@ export async function DELETE(req, res) {
 
         // Set where clause
         let whereClause = {
-            name: searchParams.get('name') || undefined
+            name: searchParams.get('name') || undefined,
+            shopee_id: parseInt(searchParams.get('shopeeId'), 10) || undefined,
         };
 
         // Get products based on where clause

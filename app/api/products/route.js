@@ -2,7 +2,7 @@ import { prisma } from "@app/api/client";
 
 export async function GET(req, res) {
     try {
-        // Get products with their variations and images
+        // Get products
         const products = await prisma.product.findMany({});
 
         // Map products to a frontend friendly format
@@ -28,16 +28,14 @@ export async function POST(req, res) {
         // Get data from request
         const requestData = await req.json();
 
-        let products;
-        // Check if the data is a array
-        if (!Array.isArray(requestData)) {
-            // If the data is not an array, transform it into an array
-            products = [requestData];
-        };
+        // Ensure the data is an array
+        const products = Array.isArray(requestData)
+            ? requestData
+            : [requestData];
 
-        // Create a new product
+        // Create new products
         const newProducts = await prisma.$transaction(
-            Promise.all(products.map(product =>
+            products.map(product =>
                 prisma.product.create({
                     data: {
                         name: product.name,
@@ -46,11 +44,14 @@ export async function POST(req, res) {
                         targeted_stock: parseInt(product.targetedStock, 10),
                     },
                 })
-            ))
+            )
         );
 
-        // Return the new product
-        return new Response(JSON.stringify(newProducts), { status: 200 });
+        // Return the new product(s), ensuring the response is the same format as the request
+        return new Response(JSON.stringify(Array.isArray(requestData)
+            ? newProducts
+            : newProducts[0]
+        ), { status: 200 });
     } catch (error) {
         return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
@@ -62,12 +63,10 @@ export async function PUT(req, res) {
         // Get data from request
         const requestData = await req.json();
 
-        let products;
-        // Check if the data is a array
-        if (!Array.isArray(requestData)) {
-            // If the data is not an array, transform it into an array
-            products = [requestData];
-        };
+        // Ensure the data is an array
+        const products = Array.isArray(requestData)
+            ? requestData
+            : [requestData];
 
         // Update products, or create new ones if they don't exist
         const updatedProducts = await prisma.$transaction(
@@ -92,8 +91,11 @@ export async function PUT(req, res) {
             ))
         );
 
-        // Return the updated products
-        return new Response(JSON.stringify(updatedProducts), { status: 200 });
+        // Return the updated product(s), ensuring the response is the same format as the request
+        return new Response(JSON.stringify(Array.isArray(requestData)
+            ? updatedProducts
+            : updatedProducts[0]
+        ), { status: 200 });
     } catch (error) {
         return new Response(JSON.stringify("Error in request"), { status: 500 });
     }
