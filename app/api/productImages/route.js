@@ -32,14 +32,14 @@ export async function POST(req, res) {
 
         // Create a new image
         const newImages = await prisma.$transaction(
-            Promise.all(images.map(image =>
+            images.map(image =>
                 prisma.product_image.create({
                     data: {
                         product_id: parseInt(image.productId, 10),
                         link: image.link,
                     },
                 })
-            ))
+            )
         );
 
         // Return the new image(s), ensuring the response is the same format as the request
@@ -65,7 +65,7 @@ export async function PUT(req, res) {
 
         // Update images
         const updatedImages = await prisma.$transaction(
-            Promise.all(images.map(image =>
+            images.map(image =>
                 prisma.product_image.upsert({
                     where: {
                         id: image.id
@@ -79,7 +79,7 @@ export async function PUT(req, res) {
                         link: image.link,
                     }
                 })
-            ))
+            )
         );
 
         // Return the updated image(s), ensuring the response is the same format as the request

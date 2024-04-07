@@ -12,10 +12,13 @@
 body {
     /* background-color: #eff8ff; */
     /* overflow: hidden; */
-    @apply bg-primary-blueGrayLight;
+    @apply bg-[#F8F8F8];
     height: 100%;
 }
 
+.nav {
+    @apply w-full h-16 bg-white flex justify-between items-center p-4 shadow-sm;
+}
 .main {
     @apply w-full sm:w-4/5 lg:w-2/3 xl:w-3/5 m-auto mb-4 p-10 items-center mt-5 relative bg-white rounded-xl shadow-md;
 }

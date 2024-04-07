@@ -34,7 +34,7 @@ export async function POST(req, res) {
 
         // Create new order items
         const newOrderItems = await prisma.$transaction(
-            Promise.all(orderItems.map(orderItem =>
+            orderItems.map(orderItem =>
                 prisma.order_item.create({
                     data: {
                         order_id: orderItem.orderId,
@@ -42,7 +42,7 @@ export async function POST(req, res) {
                         quantity: orderItem.quantity,
                     },
                 })
-            ))
+            )
         );
 
         // Return the new order item(s), ensuring the response is the same format as the request
@@ -68,7 +68,7 @@ export async function PUT(req, res) {
 
         // Update order items, or create new ones if they don't exist
         const updatedOrderItems = await prisma.$transaction(
-            Promise.all(orderItems.map(orderItem =>
+            orderItems.map(orderItem =>
                 prisma.order_item.upsert({
                     where: {
                         id: orderItem.id
@@ -84,7 +84,7 @@ export async function PUT(req, res) {
                         quantity: orderItem.quantity,
                     }
                 })
-            ))
+            )
         );
 
         // Return the updated order item(s), ensuring the response is the same format as the request

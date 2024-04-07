@@ -35,7 +35,7 @@ export async function POST(req, res) {
 
         // Create new products
         const newProducts = await prisma.$transaction(
-            Promisse.all(products.map(product =>
+            products.map(product =>
                 prisma.product.create({
                     data: {
                         name: product.name,
@@ -44,7 +44,7 @@ export async function POST(req, res) {
                         targeted_stock: parseInt(product.targetedStock, 10),
                     },
                 })
-            ))
+            )
         );
 
         // Return the new product(s), ensuring the response is the same format as the request
@@ -58,6 +58,7 @@ export async function POST(req, res) {
     }
 };
 
+
 export async function PUT(req, res) {
     try {
         // Get data from request
@@ -70,7 +71,7 @@ export async function PUT(req, res) {
 
         // Update products, or create new ones if they don't exist
         const updatedProducts = await prisma.$transaction(
-            Promise.all(products.map(product =>
+            products.map(product =>
                 prisma.product.upsert({
                     where: {
                         id: product.id
@@ -88,7 +89,7 @@ export async function PUT(req, res) {
                         targeted_stock: parseInt(product.targetedStock, 10),
                     },
                 })
-            ))
+            )
         );
 
         // Return the updated product(s), ensuring the response is the same format as the request

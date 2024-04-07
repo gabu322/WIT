@@ -14,7 +14,7 @@ import Alert from "@components/Alert";
  * TODO - Add ways to remove images and variations
  * TODO - Add a way handle less significant errors
 **/
-export default ({ params }) => {
+export default function Page({ params }) {
     const router = useRouter();
 
     const [product, setProduct] = useState({
@@ -199,10 +199,16 @@ export default ({ params }) => {
         try {
             if (params?.id > 0) {
                 const updatingToast = toast.loading('Atualizando produto...');
-                await axios.put('/api/products', product);
+                await axios.put(`/api/products/${params?.id}`, product);
 
+                toast.update(updatingToast, {
+                    render: "Produto atualizado, atualizando variações...",
+                });
                 await axios.put('/api/productVariations', productVariations);
 
+                toast.update(updatingToast, {
+                    render: "Variações atualizadas, atualizando imagens...",
+                });
                 await axios.put('/api/productImages', productImages);
 
                 toast.update(updatingToast, { render: "Produto atualizado", type: "success", isLoading: false, autoClose: 3000 });
@@ -219,13 +225,29 @@ export default ({ params }) => {
                     setAlert('Adicione pelo menos uma variação');
                     throw new Error('No variations');
                 }
+                const creatingToast = toast.loading('Criando produto...');
+
                 const newProductId = await axios.post('/api/products', product);
+
+                toast.update(creatingToast, {render: "Produto criado, criando variações...",});
 
                 productVariations.forEach((variation) => { variation.productId = newProductId.data.id });
                 productImages.forEach((image) => { image.productId = newProductId.data.id; });
 
                 await axios.post('/api/productVariations', productVariations);
+
+                toast.update(creatingToast, {
+                    render: "Variações criadas, criando imagens...",
+                });
+
                 await axios.post('/api/productImages', productImages);
+
+                toast.update(creatingToast, {
+                    render: "Produto criado",
+                    type: "success",
+                    isLoading: false,
+                    autoClose: 3000
+                });
             }
 
             router.push('/products');

@@ -40,7 +40,7 @@ export async function POST(req, res) {
 
         // Create a new variation
         const newVariations = await prisma.$transaction(
-            Promise.all(variations.map(variation =>
+            variations.map(variation =>
                 prisma.product_variation.create({
                     data: {
                         product_id: parseInt(variation.productId, 10),
@@ -53,7 +53,7 @@ export async function POST(req, res) {
                         priority_weight: parseInt(variation.priorityWeight, 10),
                     },
                 })
-            ))
+            )
         );
 
         // Return the new variation(s), ensuring the response is the same format as the request
@@ -79,7 +79,7 @@ export async function PUT(req, res) {
 
         // Update each variation
         const updatedVariations = await prisma.$transaction(
-            Promise.all(variations.map(variation =>
+            variations.map(variation =>
                 prisma.product_variation.upsert({
                     where: {
                         id: parseInt(variation.id, 10),
@@ -105,7 +105,7 @@ export async function PUT(req, res) {
                         priority_weight: parseInt(variation.priorityWeight, 10),
                     },
                 })
-            ))
+            )
         );
 
         // Return the updated variation(s), ensuring the response is the same format as the request
@@ -131,13 +131,13 @@ export async function DELETE(req, res) {
 
         // Delete each variation
         const deletedVariations = await prisma.$transaction(
-            Promise.all(variations.map(variation =>
+            variations.map(variation =>
                 prisma.product_variation.delete({
                     where: {
                         id: parseInt(variation.id, 10),
                     },
                 })
-            ))
+            )
         );
 
         // Return the deleted variation(s), ensuring the response is the same format as the request
