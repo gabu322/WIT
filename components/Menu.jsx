@@ -28,7 +28,12 @@ export default function Menu() {
             </div>
 
             <div className="flex-shrink-0 flex flex-row gap-4 ">
-                <Image className="pl-2" src="/icons/add.svg" width={24} height={24} />
+                <Image className="pl-1" src="/icons/white/list.svg" width={32} height={32} />
+                <Link href="/products" className={"transition-all cursor-pointer " + (isHovered ? " opacity-100" : " opacity-0")}>Visualizar</Link>
+            </div>
+
+            <div className="flex-shrink-0 flex flex-row gap-4 ">
+                <Image className="pl-1" src="/icons/white/add.svg" width={32} height={32} />
                 <Link href="/products/0" className={"transition-all cursor-pointer " + (isHovered ? " opacity-100" : " opacity-0")}>Adicionar</Link>
             </div>
 
@@ -41,7 +46,7 @@ export default function Menu() {
             </div>
 
             <div className="flex-shrink-0 flex flex-row gap-4 ">
-                <Image className="pl-2" src="/icons/money.svg" width={24} height={24} />
+                <Image className="pl-2" src="/icons/calculator.svg" width={32} height={32} />
                 <Link href="/finances/calculator" className={"transition-all cursor-pointer " + (isHovered ? " opacity-100" : " opacity-0")}>Calcular</Link>
             </div>
         </aside>

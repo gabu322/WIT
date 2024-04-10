@@ -8,7 +8,7 @@ export default function Button({
     width,
     height,
     square,
-    color,
+    color = "bg-blue-500 hover:bg-blue-600",
     className,
     transparent,
     blank,
@@ -36,20 +36,22 @@ export default function Button({
     }
 
     if (transparent || color == "transparent") {
-        color = " bg-transparent";
+        color = "bg-transparent";
         textColor = " text-black font-bold";
     } else if (color == "red") {
-        color = " bg-red-500 hover:bg-red-600";
+        color = "bg-red-500 hover:bg-red-600";
     } else if (color == "green") {
-        color = " bg-green-500 hover:bg-green-600";
+        color = "bg-green-500 hover:bg-green-600";
     } else if (color == "yellow") {
-        color = " bg-yellow-500 hover:bg-yellow-600";
+        color = "bg-yellow-500 hover:bg-yellow-600";
     } else if (color == "gray") {
-        color = " bg-gray-500 hover:bg-gray-600";
+        color = "bg-gray-500 hover:bg-gray-600";
     } else if (color == "pink") {
-        color = " bg-pink-500 hover:bg-pink-600";
-    } else {
-        color = " bg-blue-500 hover:bg-blue-600";
+        color = "bg-pink-500 hover:bg-pink-600";
+    } else if (color == "white") {
+        color = "bg-white hover:bg-gray-100";
+    } else if (color == "black") {
+        color = "bg-black hover:bg-gray-800";
     }
 
 
@@ -60,7 +62,7 @@ export default function Button({
 
 
     return <button type={type ?? "button"}
-        className={"px-3 rounded drop-shadow transition-all duration-200 cursor-pointer font-semibold text-sm " + color + " " + textColor + " " + className}
+        className={`px-3 rounded drop-shadow transition-all duration-200 cursor-pointer font-semibold text-sm ${color} ${textColor} ${className}`}
         style={{
             width: width ??  "fit-content",
             whiteSpace: " nowrap",

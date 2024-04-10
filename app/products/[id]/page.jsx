@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 
 import Button from "@components/Button";
 import Input from "@components/Input";
-import Alert from "@components/Alert";
 
 /** Page to create or edit a product
  * TODO - Add ways to remove images and variations
@@ -41,7 +40,6 @@ export default function Page({ params }) {
 
     const [debugMode, setDebugMode] = useState(false);
 
-    const [alert, setAlert] = useState();
 
     useEffect(() => {
         setDebugMode(location.search.includes('debug'));
@@ -58,7 +56,6 @@ export default function Page({ params }) {
                 });
                 setProduct(res.data)
             }).catch(error => {
-                setAlert(error)
                 toast.update(fetchingToast, {
                     render: "Produto não encontrado",
                     type: "error",
@@ -74,7 +71,6 @@ export default function Page({ params }) {
                 });
                 setProductVariations(res.data);
             }).catch(error => {
-                setAlert(error)
                 toast.update(fetchingToast, {
                     render: "Variações não encontradas",
                     type: "error",
@@ -90,7 +86,6 @@ export default function Page({ params }) {
                 });
                 setProductImages(res.data)
             }).catch(error => {
-                setAlert(error)
                 toast.update(fetchingToast, {
                     render: "Imagens não encontradas",
                     type: "error",
@@ -217,19 +212,17 @@ export default function Page({ params }) {
                 const existingProduct = await axios.get(`/api/products/search?name=${product.name}`);
 
                 if (existingProduct.data.length > 0) {
-                    setAlert('Produto já existe');
                     throw new Error('Product already exists');
                 }
 
                 if (productVariations.length < 1) {
-                    setAlert('Adicione pelo menos uma variação');
                     throw new Error('No variations');
                 }
                 const creatingToast = toast.loading('Criando produto...');
 
                 const newProductId = await axios.post('/api/products', product);
 
-                toast.update(creatingToast, {render: "Produto criado, criando variações...",});
+                toast.update(creatingToast, { render: "Produto criado, criando variações...", });
 
                 productVariations.forEach((variation) => { variation.productId = newProductId.data.id });
                 productImages.forEach((image) => { image.productId = newProductId.data.id; });
@@ -257,198 +250,145 @@ export default function Page({ params }) {
     };
 
     return <>
-        {alert && <Alert error={alert} color="red" />}
 
-        <main className="main">
+        <div className="h-1/3">
+            <h1 className="text-4xl font-bold">Produto</h1>
+        </div>
+        <form className="h-2/3 grid grid-rows-5 grid-cols-5 gap-8 grid-flow-col" onSubmit={handleSubmit}>
 
-            <form onSubmit={handleSubmit} className="flex-c-10 w-full">
+            <div className="card row-span-3 col-span-3 flex-c-8">
+                <p className="cardTitle col-span-5">Informações gerais</p>
+                <div className="flex-r-8 grow">
+                    <div className="flex flex-col justify-between w-2/5">
 
-                {/* Informações gerais */}
-                <div className="flex-c-8">
-                    <h1 className="text-4xl font-bold w-full">Informações gerais</h1>
-
-                    <div className="flex-c-6">
                         <Input
-                            label="Nome completo do produto"
+                            label="Nome"
                             name="name"
                             initialValue={product.name}
-                            onChange={(e) => handleChange(e)}
+                            onChange={handleChange}
                             required
                         />
-
                         <Input
-                            label="Descrição"
-                            name="description"
-                            initialValue={product.description}
-                            onChange={(e) => handleChange(e)}
-                            type="textarea"
+                            label="Link"
+                            name="link"
+                            initialValue={product.link}
+                            onChange={handleChange}
                             required
                         />
-
-                        <div className="flex-r-6">
-                            <Input
-                                label="Shopee ID"
-                                name="shopeeId"
-                                initialValue={product.shopeeId}
-                                onChange={(e) => handleChange(e)}
-                                required
-                            />
-
-                            <Button
-                                href={"https://shopee.com.br/product/" + process.env.NEXT_PUBLIC_SHOPEE_SHOP_ID + "/" + product.shopeeId}
-                                blank
-                                text="Verificar"
-                            />
-
-                            <Button
-                                href={"https://seller.shopee.com.br/portal/product/" + product.shopeeId}
-                                blank
-                                text="Editar"
-                            />
-                        </div>
-
+                        <Input
+                            label="Shopee ID"
+                            name="shopeeId"
+                            initialValue={product.shopeeId}
+                            onChange={handleChange}
+                            required
+                        />
                         <Input
                             label="Estoque esperado"
-                            name="targetedStock"
-                            initialValue={product.targetedStock} type="number"
-                            onChange={(e) => handleChange(e)}
+                            name="expectedStock"
+                            initialValue={product.expectedStock}
+                            onChange={handleChange}
+                            required
                         />
-
                     </div>
-                </div>
-
-                {/* Imagens */}
-                <div className="flex-c-8">
-                    <h1 className="text-4xl font-bold w-full">Imagens</h1>
-                    <div className="flex-r-6 justify-between">
-                        <Input label="Link da imagem" name="imageLink" onChange={(e) => { setNewImageLink(e.target.value); }} />
-                        <Button
-                            onClick={() => {
-                                if (newImageLink.trim() !== '') {
-                                    handleAddImage(newImageLink.trim());;
-                                }
-                            }}
-                            text="Adicionar imagem"
-                        />
-
-                    </div>
-                    {productImages.length > 0 && <div className="flex-r-6 w-full">
-                        {productImages?.map((image, index) => (
-                            <div key={index} className="relative border-2 rounded-lg border-orange-200" style={{ width: "150px", height: "150px" }}>
-                                <img src={image.link} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-                                <Button
-                                    className={"absolute -top-0 -right-0"}
-                                    onClick={() => {
-                                        handleRemoveImage(index)
-                                    }}
-                                    square
-                                    color={"transparent"}
-                                    text="-"
-                                />
-
-                            </div>
-                        ))}
-                    </div>
-                    }
-                </div>
-
-                {/* Informações de venda */}
-                <div className="flex-c-8">
-                    <div className="flex-r-6">
-                        <h1 className="text-4xl font-bold w-full">Informações de venda</h1>
-                        {productVariations.length > 1 && <Button onClick={handleApplyToAll} text="Aplicar a todos" />}
-                        <Button onClick={handleAddVariation} color="green">Adicionar variações</Button>
-                    </div>
-
-                    <div className="flex-c-6">
-                        {productVariations.map((variation, index) => (
-                            <div key={index} className={productVariations.length == 1 ? "flex-c-6" : "flex-r-6"}>
-                                {productVariations.length > 1 && <Input
-                                    id={"variationName" + (index + 1)}
-                                    name="name"
-                                    label={"Nome da variação"}
-                                    initialValue={variation.name}
-                                    onChange={(e) => handleChangeVariation(e, index)}
-                                    required
-                                />}
-                                <Input
-                                    id={"stock" + (index + 1)}
-                                    name="stock"
-                                    label={"Estoque atual"}
-                                    type="number"
-                                    initialValue={variation.stock}
-                                    onChange={(e) => handleChangeVariation(e, index)}
-                                    required
-                                />
-                                <Input
-                                    id={"buyLink" + (index + 1)}
-                                    name="buyLink"
-                                    label={"Link de compra"}
-                                    initialValue={variation.buyLink}
-                                    onChange={(e) => handleChangeVariation(e, index)}
-                                    required
-                                />
-                                <Input
-                                    id={"buyPrice" + (index + 1)}
-                                    name="buyPrice"
-                                    label={"Preço de compra (USD)"}
-                                    type="currency"
-                                    initialValue={variation.buyPrice}
-                                    onChange={(e) => handleChangeVariation(e, index)}
-                                    required
-                                />
-                                <Input
-                                    id={"sellPrice" + (index + 1)}
-                                    name="sellPrice"
-                                    label={"Preço de venda (R$)"}
-                                    type="currency"
-                                    initialValue={variation.sellPrice}
-                                    onChange={(e) => handleChangeVariation(e, index)}
-                                    required
-                                />
-                                {productVariations.length > 1 &&
-                                    <Button
-                                        onClick={() => handleRemoveVariation(index)}
-                                        color="red"
-                                        square
-                                        text="X"
-                                    />
-                                }
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Debug buttonsebug */}
-                <div className="w-full flex flex-row-reverse gap-6">
-                    <Button
-                        type="submit"
-                        color="green"
-                        text={params?.id > 0
-                            ? "Atualizar produto"
-                            : "Criar produto"
-                        }
+                    <Input
+                        label="Descrição"
+                        name="description"
+                        initialValue={product.description}
+                        onChange={handleChange}
+                        required
+                        type="textarea"
+                        className="col-span-3 row-span-3 w-full"
                     />
-                    {debugMode && <>
-                        <Button
-                            onClick={() => { console.log(product); }}
-                            color="yellow"
-                            text="Print product"
-                        />
-
-                        <Button
-                            onClick={() => { console.log(productVariations); }}
-                            color="yellow"
-                            text="Print Variations"
-                        />
-                        <Button
-                            onClick={() => { console.log(productImages); }}
-                            color="yellow"
-                            text="Print Images"
-                        />
-                    </>}
                 </div>
-            </form>
-        </main>
+
+            </div>
+
+            <div className="card row-span-2 col-span-3 bg-white flex flex-row">
+                <div className="w-48 flex justify-between flex-col">
+                    <p className="cardTitle">Imagens</p>
+                    <Input
+                        label="Link da imagem"
+                        value={newImageLink}
+                        onChange={(e) => setNewImageLink(e.target.value)}
+                        className="w-full"
+                    />
+                    <Button
+                        onClick={() => handleAddImage(newImageLink)}
+                        text="Adicionar"
+                        color="black"
+                    />
+                </div>
+
+                <div className="flex flex-col gap-4">
+                    {productImages.map((image, index) => (
+                        <div className="h-48">
+                            <img src={image.link} className=" h-full object-contain" />
+
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Variações */}
+            <div className="card row-span-5 col-span-2 bg-white flex flex-col gap-8">
+                <div className="w-full flex justify-between">
+                    <p className="cardTitle">Variações</p>
+                    <Button
+                        onClick={handleAddVariation}
+                        text={"+ Adicionar"}
+                        color='black'
+
+                    />
+                </div>
+                <div className="grow grid grid-cols-6">
+                    <p className="col-span-1">Nome</p>
+                    <p className="col-span-1">Estoque</p>
+                    <p className="col-span-1">Preço de compra</p>
+                    <p className="col-span-1">Preço de venda</p>
+                    <p className="col-span-1">Imagem</p>
+                    {productVariations.map((variation, index) => (
+                        <div key={index} className="col-span-6 grid grid-cols-6 gap-2">
+                            <Input
+                                name="name"
+                                value={variation.name}
+                                onChange={(e) => handleChangeVariation(e, index)}
+                                className="col-span-1"
+                            />
+                            <Input
+                                name="stock"
+                                value={variation.stock}
+                                onChange={(e) => handleChangeVariation(e, index)}
+                                className="col-span-1"
+                            />
+                            <Input
+                                name="buyPrice"
+                                value={variation.buyPrice}
+                                onChange={(e) => handleChangeVariation(e, index)}
+                                className="col-span-1"
+                            />
+                            <Input
+                                name="sellPrice"
+                                value={variation.sellPrice}
+                                onChange={(e) => handleChangeVariation(e, index)}
+                                className="col-span-1"
+                            />
+                            <Input
+                                name="imageLink"
+                                value={variation.imageLink}
+                                onChange={(e) => handleChangeVariation(e, index)}
+                                className="col-span-1"
+                            />
+                            <Button
+                                onClick={() => handleRemoveVariation(index)}
+                                text="Remover"
+                                color="red"
+                            />
+                        </div>
+                    ))}
+
+
+                </div>
+            </div>
+        </form >
     </>
 };

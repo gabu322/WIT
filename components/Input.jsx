@@ -159,7 +159,7 @@ export default function Input({
         input = (<>
             <textarea {...commonAttributes}
                 style={{
-                    minHeight: "80px",
+                    height: "100%",
                     paddingTop: "45px",
                     backgroundColor: "white"
                 }}
@@ -184,7 +184,7 @@ export default function Input({
         correctLabel = true;
     }
 
-    return <div className={`relative h-full ${!className || !className.includes("w-") ? "w-full" : ""} ${className}`} name={value}>
+    return <div className={`relative ${!className || !className.includes("w-") ? "w-full" : ""} ${className}`} name={value}>
 
         {input}
         <label htmlFor={htmlFor} style={{ zIndex: 1, }}
