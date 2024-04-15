@@ -61,10 +61,11 @@ export default function Button({
     }
 
 
-    return <button type={type ?? "button"}
-        className={`px-3 rounded drop-shadow transition-all duration-200 cursor-pointer font-semibold text-sm ${color} ${textColor} ${className}`}
+    return <button
+        type={type ?? "button"}
+        className={`px-3 rounded drop-shadow transition-all duration-200 cursor-pointer font-semibold text-sm flex-r-2 items-center justify-center ${color} ${textColor} ${className}`}
         style={{
-            width: width ??  "fit-content",
+            width: width ?? "fit-content",
             whiteSpace: " nowrap",
             height: height ?? "40px",
             flex: "0 0 auto"
@@ -72,12 +73,7 @@ export default function Button({
         onClick={onClick}
         disabled={disabled}
     >
-        {icon
-            ? (<div className='h-4/5 w-4/5'>
-                <img src={icon} className='w-full h-full' />
-
-            </div>)
-            : (children || text)}
+        {children}
 
         {href && (<Link href={href} target={blank ? "_blank" : ""} className='top-0 left-0 absolute w-full h-full' />)}
     </button>

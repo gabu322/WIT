@@ -1,13 +1,15 @@
 'use client';
 
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
+import Image from "next/image";
 
+import axios from "axios";
 import { toast } from "react-toastify";
 
 import Button from "@components/Button";
 import Input from "@components/Input";
+import { calculateSellPrice } from '@functions/sellPrice.js';
 
 /** Page to create or edit a product
  * TODO - Add ways to remove images and variations
@@ -36,8 +38,8 @@ export default function Page({ params }) {
         priorityWeight: '',
     }]);
 
-    const [newImageLink, setNewImageLink] = useState('');
-
+    const [newImage, setNewImage] = useState('');
+    const [variationsEditingMode, setVariationsEditingMode] = useState(false);
     const [debugMode, setDebugMode] = useState(false);
 
 
@@ -249,13 +251,19 @@ export default function Page({ params }) {
         }
     };
 
-    return <>
+    return <form onSubmit={handleSubmit} className="h-full">
 
         <div className="h-1/3">
             <h1 className="text-4xl font-bold">Produto</h1>
+            {/* submit button */}
+            <div className="flex justify-end">
+                <Button
+                    type="submit"
+                    color="black"
+                >Salvar</Button>
+            </div>
         </div>
-        <form className="h-2/3 grid grid-rows-5 grid-cols-5 gap-8 grid-flow-col" onSubmit={handleSubmit}>
-
+        <div className="h-2/3 grid grid-rows-5 grid-cols-5 gap-8 grid-flow-col">
             <div className="card row-span-3 col-span-3 flex-c-8">
                 <p className="cardTitle col-span-5">Informações gerais</p>
                 <div className="flex-r-8 grow">
@@ -303,92 +311,113 @@ export default function Page({ params }) {
 
             </div>
 
-            <div className="card row-span-2 col-span-3 bg-white flex flex-row">
+            <div className="card row-span-2 col-span-3  flex flex-row gap-4">
                 <div className="w-48 flex justify-between flex-col">
                     <p className="cardTitle">Imagens</p>
                     <Input
                         label="Link da imagem"
-                        value={newImageLink}
-                        onChange={(e) => setNewImageLink(e.target.value)}
+                        value={newImage}
+                        onChange={(e) => setNewImage(e.target.value)}
                         className="w-full"
+                        disabled={productImages.length >= 5}
                     />
                     <Button
-                        onClick={() => handleAddImage(newImageLink)}
-                        text="Adicionar"
+                        onClick={() => handleAddImage(newImage)}
                         color="black"
-                    />
+                    >Adicionar</Button>
                 </div>
 
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-row gap-4 ">
                     {productImages.map((image, index) => (
-                        <div className="h-48">
-                            <img src={image.link} className=" h-full object-contain" />
-
+                        <div className="h-36 relative">
+                            <Image src={image.link}
+                                height={130}
+                                width={130}
+                                className="fit-cover rounded-lg"
+                            />
+                            <Image src="/icons/black/close.svg"
+                                width={12}
+                                height={12}
+                                className="absolute w-3 h-3 right-1 top-1 cursor-pointer"
+                                onClick={() => handleRemoveImage(index)}
+                            />
                         </div>
                     ))}
                 </div>
             </div>
 
             {/* Variações */}
-            <div className="card row-span-5 col-span-2 bg-white flex flex-col gap-8">
+            <div className="card row-span-5 col-span-2 flex flex-col gap-8">
                 <div className="w-full flex justify-between">
                     <p className="cardTitle">Variações</p>
                     <Button
-                        onClick={handleAddVariation}
-                        text={"+ Adicionar"}
+                        onClick={() => {
+                            let calculatedVariations = [...productVariations];
+
+                            calculatedVariations.forEach((variation, index) => {
+                                calculatedVariations[index].sellPrice = calculateSellPrice(variation.buyPrice);
+                            });
+
+                            setProductVariations(calculatedVariations);
+                        }}
                         color='black'
-
-                    />
+                    >Calcular valor</Button>
+                    <Button
+                        onClick={() => handleAddVariation()}
+                        color='black'
+                    > <img src="/icons/white/add.svg" className="w-4 h-4" /> Adicionar</Button>
                 </div>
-                <div className="grow grid grid-cols-6">
-                    <p className="col-span-1">Nome</p>
-                    <p className="col-span-1">Estoque</p>
-                    <p className="col-span-1">Preço de compra</p>
-                    <p className="col-span-1">Preço de venda</p>
-                    <p className="col-span-1">Imagem</p>
-                    {productVariations.map((variation, index) => (
-                        <div key={index} className="col-span-6 grid grid-cols-6 gap-2">
-                            <Input
-                                name="name"
-                                value={variation.name}
-                                onChange={(e) => handleChangeVariation(e, index)}
-                                className="col-span-1"
-                            />
-                            <Input
-                                name="stock"
-                                value={variation.stock}
-                                onChange={(e) => handleChangeVariation(e, index)}
-                                className="col-span-1"
-                            />
-                            <Input
-                                name="buyPrice"
-                                value={variation.buyPrice}
-                                onChange={(e) => handleChangeVariation(e, index)}
-                                className="col-span-1"
-                            />
-                            <Input
-                                name="sellPrice"
-                                value={variation.sellPrice}
-                                onChange={(e) => handleChangeVariation(e, index)}
-                                className="col-span-1"
-                            />
-                            <Input
-                                name="imageLink"
-                                value={variation.imageLink}
-                                onChange={(e) => handleChangeVariation(e, index)}
-                                className="col-span-1"
-                            />
-                            <Button
-                                onClick={() => handleRemoveVariation(index)}
-                                text="Remover"
-                                color="red"
-                            />
-                        </div>
-                    ))}
-
-
-                </div>
+                <table className="table-auto w-full border-spacing-2">
+                    <thead>
+                        <tr className=" text-gray-300 h-12">
+                            <th>Nome</th>
+                            <th>Estoque</th>
+                            <th>Preço de compra</th>
+                            <th>Preço de venda</th>
+                            <th>Link da imagem</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {productVariations.map((variation, index) => (
+                            <tr>
+                                <td><Input
+                                    name="name"
+                                    initialValue={variation.name}
+                                    onChange={(e) => handleChangeVariation(e, index)}
+                                /></td>
+                                <td><Input
+                                    name="stock"
+                                    initialValue={variation.stock}
+                                    onChange={(e) => handleChangeVariation(e, index)}
+                                />
+                                </td>
+                                <td><Input
+                                    name="buyPrice"
+                                    initialValue={variation.buyPrice}
+                                    onChange={(e) => handleChangeVariation(e, index)}
+                                /></td>
+                                <td><Input
+                                    name="sellPrice"
+                                    initialValue={variation.sellPrice}
+                                    onChange={(e) => handleChangeVariation(e, index)}
+                                /></td>
+                                <td><Input
+                                    name="imageLink"
+                                    initialValue={variation.imageLink}
+                                    onChange={(e) => handleChangeVariation(e, index)}
+                                /></td>
+                                <td><Button
+                                    onClick={() => handleRemoveVariation(index)}
+                                    icon="/icons/WHITE/close.svg"
+                                    color="red"
+                                    square
+                                /></td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
-        </form >
-    </>
+        </div >
+    </form >
 };
