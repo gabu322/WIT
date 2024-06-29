@@ -16,6 +16,7 @@
     "production:build": "npx prisma generate && npx prisma migrate deploy && next build"
   },
   "dependencies": {
+    "@gabu322/simple-components": "^0.1.1",
     "@prisma/client": "^5.9.1",
     "axios": "^1.5.1",
     "debug": "^4.3.4",

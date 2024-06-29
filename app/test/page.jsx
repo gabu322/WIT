@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function() {
     const [printValue, setPrintValue] = useState('');
+
     useEffect(() => {
         const quantity = 20;
         let info = "";
@@ -13,6 +14,7 @@ export default function() {
         }
         setPrintValue("[" + info + "]");
     }, [printValue]);
+
     return <div>
         {printValue}
     </div>;

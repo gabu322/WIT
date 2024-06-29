@@ -13,13 +13,13 @@ function Product({ product, className }) {
 
     return <div className={"shadow rounded-lg h-full bg-white w-52 flex flex-col justify-between overflow-hidden relative"}>
         <div className=" h-9/10">
-            <Image width={"1000"} height={"1000"} src={images[0]}></Image>
+            <Image width={"1000"} height={"1000"} src={images[0]} alt="Product Image"/>
         </div>
         <div className="p-3 truncate font-bold leading-3" style={{ }}>
             {product.name}
         </div>
         <Link href={`/products/${product.id}`} className="absolute w-4 h-4 right-2 top-2">
-            <Image src="/icons/black/edit.svg" width={16} height={16} />
+            <Image src="/icons/black/edit.svg" width={16} height={16} alt="Edit Icon"/>
         </Link>
     </div>
 

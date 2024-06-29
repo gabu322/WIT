@@ -22,8 +22,8 @@ export default function Page({ params }) {
         id: 0,
         name: '',
         description: '',
-        link: '',
-        shopeeId: ''
+        shopeeId: '',
+        targetedStock: 0,
     });
 
     const [productImages, setProductImages] = useState([/* productId, link */]);
@@ -56,6 +56,7 @@ export default function Page({ params }) {
                 toast.update(fetchingToast, {
                     render: "Produto encontrado, buscando dados das variações...",
                 });
+                console.log(res.data)
                 setProduct(res.data)
             }).catch(error => {
                 toast.update(fetchingToast, {
@@ -253,10 +254,10 @@ export default function Page({ params }) {
 
     return <form onSubmit={handleSubmit} className="h-full">
 
-        <div className="h-1/3">
+        <div className="h-1/3 flex flex-row justify-between">
             <h1 className="text-4xl font-bold">Produto</h1>
             {/* submit button */}
-            <div className="flex justify-end">
+            <div className="flex flex-jjustify-end">
                 <Button
                     type="submit"
                     color="black"
@@ -268,18 +269,10 @@ export default function Page({ params }) {
                 <p className="cardTitle col-span-5">Informações gerais</p>
                 <div className="flex-r-8 grow">
                     <div className="flex flex-col justify-between w-2/5">
-
                         <Input
                             label="Nome"
                             name="name"
                             initialValue={product.name}
-                            onChange={handleChange}
-                            required
-                        />
-                        <Input
-                            label="Link"
-                            name="link"
-                            initialValue={product.link}
                             onChange={handleChange}
                             required
                         />
@@ -292,8 +285,8 @@ export default function Page({ params }) {
                         />
                         <Input
                             label="Estoque esperado"
-                            name="expectedStock"
-                            initialValue={product.expectedStock}
+                            name="targetedStock"
+                            initialValue={product.targetedStock}
                             onChange={handleChange}
                             required
                         />
@@ -305,7 +298,7 @@ export default function Page({ params }) {
                         onChange={handleChange}
                         required
                         type="textarea"
-                        className="col-span-3 row-span-3 w-full"
+                        className="col-span-3 row-span-3 w-full h-full"
                     />
                 </div>
 
@@ -330,15 +323,19 @@ export default function Page({ params }) {
                 <div className="flex flex-row gap-4 ">
                     {productImages.map((image, index) => (
                         <div className="h-36 relative">
-                            <Image src={image.link}
+                            <Image
+                                src={image.link}
                                 height={130}
                                 width={130}
                                 className="fit-cover rounded-lg"
+                                alt="Product Image"
                             />
-                            <Image src="/icons/black/close.svg"
+                            <Image
+                                src="/icons/black/close.svg"
                                 width={12}
                                 height={12}
                                 className="absolute w-3 h-3 right-1 top-1 cursor-pointer"
+                                alt="Remove Image"
                                 onClick={() => handleRemoveImage(index)}
                             />
                         </div>
@@ -362,62 +359,77 @@ export default function Page({ params }) {
                         }}
                         color='black'
                     >Calcular valor</Button>
+
                     <Button
                         onClick={() => handleAddVariation()}
                         color='black'
-                    > <img src="/icons/white/add.svg" className="w-4 h-4" /> Adicionar</Button>
+                    >
+                        <img src="/icons/white/add.svg" className="w-4 h-4" />
+                        Adicionar
+                    </Button>
                 </div>
                 <table className="table-auto w-full border-spacing-2">
                     <thead>
                         <tr className=" text-gray-300 h-12">
                             <th>Nome</th>
                             <th>Estoque</th>
-                            <th>Preço de compra</th>
-                            <th>Preço de venda</th>
-                            <th>Link da imagem</th>
+                            <th>Val. compra</th>
+                            <th>Val. venda</th>
+                            <th>Link de compra</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {productVariations.map((variation, index) => (
-                            <tr>
-                                <td><Input
-                                    name="name"
-                                    initialValue={variation.name}
-                                    onChange={(e) => handleChangeVariation(e, index)}
-                                /></td>
-                                <td><Input
-                                    name="stock"
-                                    initialValue={variation.stock}
-                                    onChange={(e) => handleChangeVariation(e, index)}
-                                />
+                            <tr key={index}>
+                                <td>
+                                    <Input
+                                        name="name"
+                                        initialValue={variation.name}
+                                        onChange={(e) => handleChangeVariation(e, index)}
+                                    />
                                 </td>
-                                <td><Input
-                                    name="buyPrice"
-                                    initialValue={variation.buyPrice}
-                                    onChange={(e) => handleChangeVariation(e, index)}
-                                /></td>
-                                <td><Input
-                                    name="sellPrice"
-                                    initialValue={variation.sellPrice}
-                                    onChange={(e) => handleChangeVariation(e, index)}
-                                /></td>
-                                <td><Input
-                                    name="imageLink"
-                                    initialValue={variation.imageLink}
-                                    onChange={(e) => handleChangeVariation(e, index)}
-                                /></td>
-                                <td><Button
-                                    onClick={() => handleRemoveVariation(index)}
-                                    icon="/icons/WHITE/close.svg"
-                                    color="red"
-                                    square
-                                /></td>
+                                <td>
+                                    <Input
+                                        name="stock"
+                                        initialValue={variation.stock}
+                                        onChange={(e) => handleChangeVariation(e, index)}
+                                    />
+                                </td>
+                                <td>
+                                    <Input
+                                        name="buyPrice"
+                                        initialValue={variation.buyPrice}
+                                        onChange={(e) => handleChangeVariation(e, index)}
+                                    />
+                                </td>
+                                <td>
+                                    <Input
+                                        name="sellPrice"
+                                        initialValue={variation.sellPrice}
+                                        onChange={(e) => handleChangeVariation(e, index)}
+                                    />
+                                </td>
+                                <td>
+                                    <Input
+                                        name="buyLink"
+                                        initialValue={variation.buyLink}
+                                        onChange={(e) => handleChangeVariation(e, index)}
+                                    />
+                                </td>
+                                <td>
+                                    <Button
+                                        onClick={() => handleRemoveVariation(index)}
+                                        icon="/icons/WHITE/close.svg"
+                                        color="red"
+                                        square
+                                    />
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
-        </div >
-    </form >
+        </div>
+    </form>
 };
